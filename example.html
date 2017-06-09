@@ -44,19 +44,26 @@
         ποια είναι αυτή.</p>
     <p> Τροποποιήστε την print του βήματος 2 ως εξής:</p>
     <pre class='prettyprint'><code class='language-python'>print("Η Απάντηση είναι..." , answer )</code></pre>
+
     <div class='question question-single'>
         <p>Τί πιστεύετε ότι θα εμφανιστεί στην οθόνη αν εκτελέσετε το πρόγραμμά σας;</p>
         <fieldset>
-            <label><input type='radio' name='question'><samp>Η Απάντηση είναι... answer</samp></label>
-            <label correct><input type='radio' name='question'><samp>Η Απάντηση είναι... 42</samp></label>
+            <label>
+                <input type='radio' name='question'>
+                <samp>Η Απάντηση είναι... answer</samp>
+                <aside> Μελέτησε τον κώδικα προσεκτικά. Το <code>answer</code> δε βρίσκεται
+                        εντός εισαγωγικών, δεν θα εμφανιστεί αυτούσιο στην οθόνη. Το
+                        <code>answer</code> είναι ένα <emph>όνομα</emph> που (αυτή τη στιγμή)
+                        αντιστοιχεί στην τιμή <code>42</code>. <emph>Αυτή</emph> η τιμή
+                        θα εμφανιστεί στην οθόνη.</aside>
+            </label>
+            <label correct>
+                <input type='radio' name='question'>
+                <samp>Η Απάντηση είναι... 42</samp>
+                <!--<aside> Σωστά. Η <code>print</code> θα εμφανίσει την τιμή που αντιστοιχεί
+                        στο όνομα <code>answer</code>, όποια κι αν είναι αυτή.</aside>-->
+            </label>
         </fieldset>
-        <aside>Μελέτησε τον κώδικα προσεκτικά. Το <code>answer</code> δε βρίσκεται
-            εντός εισαγωγικών, δεν θα εμφανιστεί αυτούσιο στην οθόνη. Το
-            <code>answer</code> είναι ένα <emph>όνομα</emph> που (αυτή τη στιγμή)
-            αντιστοιχεί στην τιμή <code>42</code>. <emph>Αυτή</emph> η τιμή
-            θα εμφανιστεί στην οθόνη.</aside>
-        <aside correct>Σωστά. Η <code>print</code> θα εμφανίσει την τιμή που αντιστοιχεί
-            στο όνομα <code>answer</code>, όποια κι αν είναι αυτή.</aside>
     </div>
 </div>
 </section>

@@ -360,6 +360,7 @@ function handleHints() {
 
 //// functions for closed form questions and immediate feedback
 
+/*
 function handleQuestions() {
     // create a feedback button
     var feedbackButton = document.createElement('button');
@@ -406,6 +407,51 @@ function handleQuestions() {
         question.insertBefore(feedbackButton, question.querySelector('fieldset').nextSibling);
     }
 }
+*/
+
+function handleQuestions() {
+    var filter = tagFilter('ASIDE');
+    // find all closed form questions with a single answer
+    var questions = document.querySelectorAll("div.question-single");
+    for (var question of questions) {
+        // create a feedback button
+        var feedbackButton = document.createElement('button');
+        feedbackButton.className = 'feedback-button';
+        feedbackButton.innerHTML = 'Έλεγχος Απάντησης';
+        feedbackButton.disabled = true;
+        // onclick event handler
+        feedbackButton.onclick = function() {
+            // retrieve selected answer and display its associated feedback
+            var selected = question.querySelector('input:checked').parentNode;
+            selected.setAttribute('highlighted', '');
+            if (selected.feedback) show(selected.feedback);
+            // disable the feedback button
+            this.disabled = true;
+        }
+        question.appendChild(feedbackButton);
+        // retrieve answers (labels) to the question
+        var answers = question.querySelectorAll("label");
+        for (var answer of answers) {
+            // make sure the answer isn't checked
+            answer.querySelector('input').checked = false;
+            // link segment to explanation (via object properties)
+            answer.feedback = answer.querySelector('aside');
+            if (answer.feedback) hide(answer.feedback);
+            // onchange event handler
+            answer.onchange = function() {
+                // enable feedback button
+                feedbackButton.disabled = false;
+                // hide active feedback
+                var feedback = question.querySelectorAll('aside');
+                if (feedback) hideAll(feedback);
+                // de-highlight previously highlighted answer
+                var selected = question.querySelector('label[highlighted]');
+                if (selected) selected.removeAttribute('highlighted');
+            }
+        }
+    }
+}
+
 
 //// onload
 
