@@ -1,0 +1,271 @@
+/*
+    general
+*/
+
+body {
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 400;
+    font-size: 12pt;
+    width: 600px;
+    /*
+    margin-left: 120px;
+    position: relative;
+    left:120px;
+    */
+    padding-left: 120px;
+}
+
+/*
+h1, section h2, section p {
+    padding-left: 20px;
+}
+*/
+
+h1 {
+    font-family: 'Ubuntu Condensed', sans-serif;
+    color: rgb(0, 120, 128);
+    padding-top: 12px;
+    padding-bottom: 24px;
+}
+
+div.section-heading {
+    position: relative;
+    left: -5%;
+    padding: 5%;
+    width: 95%;
+
+    color: rgb(255, 255, 255);
+    padding-top: 12px;
+    padding-bottom: 18px;
+    background-color: rgb(0, 120, 128);
+}
+
+div.section-heading h2, div.section-heading h4 {
+    margin: 0;
+}
+
+div.section-heading h4 {
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 300;
+}
+
+div.section-heading h2 {
+    font-family: 'Ubuntu Condensed', sans-serif;
+    font-weight: 700;
+}
+
+:focus {outline: none;}
+::-moz-focus-inner {border:0;}
+
+/*
+    step numbering
+*/
+
+section > div.step::before {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 125%;
+    content: attr(value);
+    padding: 12px;
+    height: 24px;
+    background-color: rgb(0, 120, 128);
+    color: white;
+    float: left;
+    margin-left: -60px;
+}
+
+section > div.step {
+    position: relative;
+}
+
+/*
+    navigation buttons
+*/
+
+div.nav-buttons {
+    margin-top: 36px;
+}
+
+div.nav-buttons:after {
+    display: block;
+    content: '.';
+    visibility: hidden;
+    clear: both;
+}
+
+.prev-button {
+    float: left;
+    padding: 6px 16px 6px 40px;
+}
+
+.next-button {
+    float: right;
+    padding: 6px 40px 6px 16px;
+}
+
+.nav-button {
+    position: relative;
+    font-family: 'Ubuntu Condensed', sans-serif;
+    color: rgb(0, 128, 128);
+    border: 2px solid rgb(0, 128, 128);
+    border-radius: 20px;
+    background-color: rgb(255, 255, 255);
+}
+
+.next-button:after {
+    position: absolute;
+    top: 16px;
+    right: 12px;
+    content: url('icons/next.svg')
+}
+
+.prev-button:before {
+    position: absolute;
+    top: 16px;
+    left: 12px;
+    content: url('icons/prev.svg')
+}
+
+.nav-button:hover:not([disabled]) {
+    color: rgb(255, 255, 255);
+    background-color: rgb(0, 128, 128);
+}
+
+.nav-button:disabled {
+    filter: grayscale(100%);
+    filter: opacity(25%);
+}
+
+/*
+    code (additional to prettify.css)
+*/
+
+code a::after {
+    content: url('icons/cursor.svg');
+    margin-left: 6px;
+    margin-top: 3px;
+    position: absolute;
+}
+
+code a[highlighted] {
+    text-decoration: underline dotted;
+}
+
+div.explanation-group aside[highlighted] {
+    background-color: rgb(232, 255, 255);
+}
+
+div.explanation-group {
+    position: absolute;
+    margin-left: 16px;
+    width: 240px;
+    left: 100%;
+}
+
+div.explanation-group aside {
+    padding: 6px 16px 6px 16px;
+    color: rgb(112, 112, 112);
+    font-weight: 300;
+}
+
+pre > code a {
+    cursor: default;
+}
+
+/*
+    hints
+*/
+
+.hint {
+    position: relative;
+    z-index: -2;
+    padding: 1pt 12pt 1pt 12pt;
+    background-color: rgb(255, 255, 232);
+}
+
+.hint-button {
+    position: relative;
+    font-family: 'Ubuntu Condensed', sans-serif;
+    color: rgb(0, 164, 128);
+    border: 2px solid rgb(0, 164, 128);
+    border-radius: 20px;
+    background-color: rgb(255, 255, 255);
+    padding: 6px 18px 6px 18px;
+    margin: 12px 8px 12px 0px;
+}
+
+.hint-button:hover, .hint-button[active] {
+    color: rgb(255, 255, 255);
+    background-color: rgb(0, 164, 128);
+}
+
+.hint-button[active]::after {
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 110%;
+    left: 50%;
+    margin-left: -20px;
+    content: url(icons/point.svg);
+}
+
+/*
+    questions
+*/
+
+div.feedback-group {
+    position: absolute;
+    margin-left: 16px;
+    width: 240px;
+    left: 100%;
+}
+
+div.feedback-group aside {
+    padding: 6px 16px 6px 16px;
+    color: rgb(112, 112, 112);
+    font-weight: 300;
+}
+
+div.question fieldset label {
+    display: block;
+}
+
+fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+div.question label {
+    padding: 6px 12px 6px 12px;
+    vertical-align: middle;
+}
+
+div.question input {
+    margin-right: 12px;
+}
+
+div.question label[highlighted]:not([correct]) {
+    background-color: rgb(255, 192, 192);
+}
+
+div.question label[highlighted][correct] {
+    background-color: rgb(192, 255, 192);
+}
+
+
+/*
+.img-button, .hint-button {
+    filter: grayscale(50%);
+    filter: opacity(50%);
+}
+
+.img-button:hover, .hint-button:hover {
+    filter: grayscale(0%);
+    filter: opacity(100%);
+}
+
+.img-button:disabled, .hint-button:disabled {
+    filter: grayscale(100%);
+    cursor: default;
+}
+*/
