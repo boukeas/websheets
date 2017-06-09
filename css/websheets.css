@@ -80,7 +80,22 @@ div.section-heading h2 {
 */
 
 section > div.step::before {
-    font-family: 'Roboto Condensed', sans-serif;
+    font-family: 'Ubuntu Condensed', sans-serif;
+    font-size: 125%;
+    display: block;
+    content: 'Βήμα ' attr(value);
+    padding: 1em 0 1em 0;
+    color: rgb(0, 120, 128);
+    border-bottom: 1px solid rgb(0, 120, 128);
+    /*
+    background-color: rgb(0, 120, 128);
+    color: white;
+    */
+}
+
+/*
+section > div.step::before {
+    font-family: 'Ubuntu Condensed', sans-serif;
     font-size: 125%;
     content: attr(value);
     padding: 12px;
@@ -90,6 +105,7 @@ section > div.step::before {
     float: left;
     margin-left: -60px;
 }
+*/
 
 section > div.step {
     position: relative;
