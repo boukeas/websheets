@@ -213,9 +213,6 @@ function handleNavigation() {
 }
 
 function handleSectioning() {
-    // retrieve all steps and explicitly enumerate them
-    enumerate(document.querySelectorAll('div.step'));
-
     sectionIndex = 1;
     for (var section of document.querySelectorAll('section')) {
         // retrieve the section's heading
@@ -451,14 +448,55 @@ function handleQuestions() {
         }
     }
 }
+////
 
+function handleSteps() {
+    // retrieve all steps
+    var steps = document.querySelectorAll('div.step');
+    stepindex = 1;
+    for (var step of steps) {
+        var headingDiv = document.createElement('div');
+        headingDiv.className = 'step-heading';
+        // make a step heading
+        var heading = document.createElement('h3');
+        heading.innerHTML = 'Βήμα ' + stepindex;
+        // make an expand/collapse button
+        var button = document.createElement('button');
+        button.className = 'expand-button';
+        button.setAttribute('expanded', '');
+        button.onclick = function() {
+            console.log(step);
+            if (this.hasAttribute('expanded')) {
+                // step is now expanded, so collapse it
+                hide(this.parentNode.nextSibling);
+                this.removeAttribute('expanded');
+            } else {
+                // step is now collapsed, so expand it
+                show(this.parentNode.nextSibling);
+                this.setAttribute('expanded', '');
+            }
+        }
+        // placement
+        headingDiv.appendChild(heading);
+        headingDiv.appendChild(button);
+        step.parentNode.insertBefore(headingDiv, step);
+        stepindex++;
+    }
+}
 
 //// onload
 
 document.body.onload = function() {
+    //
+    handleSteps();
+    //
     handleSectioning();
+    //
     handleNavigation();
+    //
     handleExplanations();
+    //
     handleHints();
+    //
     handleQuestions();
 }
