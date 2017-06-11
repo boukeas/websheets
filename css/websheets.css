@@ -204,27 +204,21 @@ pre > code a {
     hints
 */
 
-.hint {
+.hint, .question {
     position: relative;
-    z-index: -2;
     padding: 1pt 12pt 1pt 12pt;
+}
+
+.hint {
+    z-index: -2;
     background-color: rgb(255, 255, 232);
 }
 
-/*
-.hint-button {
-    position: relative;
-    font-family: 'Ubuntu Condensed', sans-serif;
-    color: rgb(0, 164, 128);
-    border: 2px solid rgb(0, 164, 128);
-    border-radius: 20px;
-    background-color: rgb(255, 255, 255);
-    padding: 6px 18px 6px 18px;
-    margin: 12px 8px 12px 0px;
+.question {
+    background-color: rgb(232, 255, 255);
 }
-*/
 
-.hint-button {
+.group-button {
     position: relative;
     font-family: 'Ubuntu Condensed', sans-serif;
     color: rgb(0, 164, 128);
@@ -235,12 +229,12 @@ pre > code a {
     margin: 12px 8px 12px 0px;
 }
 
-.hint-button:hover, .hint-button[active] {
+.group-button:hover, .group-button[active] {
     color: rgb(255, 255, 255);
     background-color: rgb(0, 164, 128);
 }
 
-.hint-button[active]::after {
+.group-button[active]::after {
     width: 0;
     height: 0;
     position: absolute;

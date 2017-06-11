@@ -124,6 +124,71 @@ function groupByFilter(first, filter, name) {
     return container;
 }
 
+function handleGroup(filter, groupname, buttonInnerHtml) {
+    // find the first element for each group of elements
+    var firstSelector = ':not(' + filter.selector + ') + ' + filter.selector;
+    var firsts = document.querySelectorAll(firstSelector);
+    for (var first of firsts) {
+        // create a container div for the group and place it
+        var container = document.createElement('div');
+        container.className = groupname + 'group-container';
+        first.parentNode.insertBefore(container, first);
+        // move all sibling elements into a group div and place it in the container
+        var group = groupByFilter(first, filter, groupname + '-group');
+        container.appendChild(group);
+        hideAll(group.childNodes);
+        // create container div for the buttons and place it
+        var buttons = document.createElement('div');
+        buttons.className = groupname + '-group-buttons';
+        buttons.active = null;
+        var buttonCounter = 0;
+        for (element of group.childNodes) {
+            // create button
+            var button = document.createElement('button');
+            button.className = 'group-button ' + groupname + '-button';
+            // link to element
+            button.element = element;
+            // button content
+            buttonCounter++;
+            button.innerHTML = buttonInnerHtml + ' ' + buttonCounter;
+
+            /*
+            // choose properties according to hint class
+            if (isInstance(hint, 'solution')) {
+                button.innerHTML = 'Λύση';
+            } else {
+                hintCounter++;
+                button.innerHTML = 'Υπόδειξη ' + hintCounter;
+            }
+            */
+            // click event
+            button.onclick = function() {
+                if (this.hasAttribute('active')) {
+                    // clicked on active element » deactivate
+                    this.removeAttribute('active');
+                    hide(this.element);
+                    this.parentNode.active = null;
+                } else {
+                    // clicked on inactive element » activate
+                    if (this.parentNode.active) {
+                        // deactivate active element
+                        this.parentNode.active.removeAttribute('active');
+                        hide(this.parentNode.active.element);
+                    }
+                    // activate this element
+                    this.setAttribute('active', '');
+                    show(this.element);
+                    this.parentNode.active = this;
+                }
+            }
+            buttons.appendChild(button);
+        }
+        // place the buttons before the hints
+        group.parentNode.insertBefore(buttons, group.parentNode.firstChild);
+    }
+}
+
+
 //// functions to assist li numbering and navigation
 
 function enumerate(elements, start=1) {
@@ -147,6 +212,42 @@ function link(elements) {
     }
     elements[elements.length-1].prev = elements[elements.length-2];
     elements[elements.length-1].next = null;
+}
+
+
+//// functions for automatic step handling
+
+function handleSteps() {
+    // retrieve all steps
+    var steps = document.querySelectorAll('div.step');
+    stepindex = 1;
+    for (var step of steps) {
+        var headingDiv = document.createElement('div');
+        headingDiv.className = 'step-heading';
+        // make a step heading
+        var heading = document.createElement('h3');
+        heading.innerHTML = 'Βήμα ' + stepindex;
+        // make an expand/collapse button
+        var button = document.createElement('button');
+        button.className = 'expand-button';
+        button.setAttribute('expanded', '');
+        button.onclick = function() {
+            if (this.hasAttribute('expanded')) {
+                // step is now expanded, so collapse it
+                hide(this.parentNode.nextSibling);
+                this.removeAttribute('expanded');
+            } else {
+                // step is now collapsed, so expand it
+                show(this.parentNode.nextSibling);
+                this.setAttribute('expanded', '');
+            }
+        }
+        // placement
+        headingDiv.appendChild(heading);
+        headingDiv.appendChild(button);
+        step.parentNode.insertBefore(headingDiv, step);
+        stepindex++;
+    }
 }
 
 
@@ -291,126 +392,8 @@ function handleExplanations() {
     }
 }
 
-//// functions for hints and solutions
-
-function makeHintButtons(hintgroup) {
-    var hintCounter = 0;
-    // create div to hold buttons
-    var buttons = document.createElement('div');
-    buttons.className = 'hint-buttons';
-    buttons.active = null;
-    for (hint of hintgroup.childNodes) {
-        // create hint button
-        var button = document.createElement('button');
-        button.className = 'hint-button';
-        // link to hint
-        button.hint = hint;
-        // choose properties according to hint class
-        if (isInstance(hint, 'solution')) {
-            button.innerHTML = 'Λύση';
-        } else {
-            hintCounter++;
-            button.innerHTML = 'Υπόδειξη ' + hintCounter;
-        }
-        // click event
-        button.onclick = function() {
-            if (this.hasAttribute('active')) {
-                // clicked on active hint » deactivate
-                this.removeAttribute('active');
-                hide(this.hint);
-                this.parentNode.active = null;
-            } else {
-                if (this.parentNode.active) {
-                    // deactivate active hint
-                    this.parentNode.active.removeAttribute('active');
-                    hide(this.parentNode.active.hint);
-                }
-                // activate this hint
-                this.setAttribute('active', '');
-                show(this.hint);
-                this.parentNode.active = this;
-            }
-        }
-        buttons.appendChild(button);
-    }
-    // place the buttons before the hints
-    hintgroup.parentNode.insertBefore(buttons, hintgroup.parentNode.firstChild);
-}
-
-function handleHints() {
-    // moves groups of adjacent hints into 'hint-group' divs,
-    // connects the hints together (adds .prev and .next properties),
-    // creates buttons into a 'hint-buttons' div, to reveal the hints
-
-    // find the first hint for each group of hints
-    var hints = document.querySelectorAll(':not(.hint) + .hint');
-    for (var hint of hints) {
-        // create a container for the hint group and insert it
-        var container = document.createElement('div');
-        container.className = 'hint-group-container';
-        hint.parentNode.insertBefore(container, hint);
-        // move all hints into a hint group div and insert it in the container
-        var filter = classFilter(hint.className);
-        var hintGroup = groupByFilter(hint, filter, 'hint-group');
-        container.appendChild(hintGroup);
-        makeHintButtons(hintGroup);
-        //
-        hideAll(hintGroup.childNodes);
-    }
-}
-
 //// functions for closed form questions and immediate feedback
 
-/*
-function handleQuestions() {
-    // create a feedback button
-    var feedbackButton = document.createElement('button');
-    feedbackButton.className = 'feedback-button';
-    feedbackButton.innerHTML = 'Ανατροφοδότηση';
-    // find all questions with a single possible answer
-    var questions = document.querySelectorAll("div.question-single");
-    for (var question of questions) {
-        // locate feedback to answers and group into a 'feedback-group' div
-        feedbacks = question.querySelectorAll('aside');
-        feedbackDiv = group(feedbacks, 'feedback-group');
-        // place 'feedback-group' div right before the possible answers
-        question.insertBefore(feedbackDiv, question.querySelector('fieldset'));
-        // link answers to feedback
-        var feedback = feedbackDiv.firstChild;
-        var answers = question.querySelectorAll("label");
-        for (var answer of answers) {
-            // make sure the answer isn't checked
-            answer.querySelector('input').checked = false;
-            // link segment to explanation (via object properties)
-            answer.linked = feedback;
-            feedback = feedback.nextSibling;
-            //
-            answer.onchange = function() {
-                feedbackButton.disabled = false;
-                hideAll(feedbacks);
-                //
-                var selected = question.querySelector('label[highlighted]');
-                if (selected) selected.removeAttribute('highlighted');
-            }
-        }
-        hideAll(feedbacks);
-        feedbackButton.disabled = true;
-        // click event
-        feedbackButton.onclick = function() {
-            // retrieve selected answer and display its associated feedback
-            var selected = question.querySelector('input:checked').parentNode;
-            selected.setAttribute('highlighted', '');
-            console.log(selected);
-            show(selected.linked);
-            // disable the feedback button
-            this.disabled = true;
-        }
-        question.insertBefore(feedbackButton, question.querySelector('fieldset').nextSibling);
-    }
-}
-*/
-
-/*
 function handleQuestions() {
     var filter = tagFilter('ASIDE');
     // find all closed form questions with a single answer
@@ -453,108 +436,7 @@ function handleQuestions() {
         }
     }
 }
-*/
 
-function handleGroup(filter, groupname, buttonInnerHtml) {
-    // find the first element for each group of elements
-    var firstSelector = ':not(' + filter.selector + ') + ' + filter.selector;
-    var firsts = document.querySelectorAll(firstSelector);
-    for (var first of firsts) {
-        // create a container div for the group and place it
-        var container = document.createElement('div');
-        container.className = groupname + 'group-container';
-        first.parentNode.insertBefore(container, first);
-        // move all sibling elements into a group div and place it in the container
-        var group = groupByFilter(first, filter, groupname + '-group');
-        container.appendChild(group);
-        hideAll(group.childNodes);
-        // create container div for the buttons and place it
-        var buttons = document.createElement('div');
-        buttons.className = 'group-buttons ' + groupname + '-group-buttons';
-        buttons.active = null;
-        var buttonCounter = 0;
-        for (element of group.childNodes) {
-            // create button
-            var button = document.createElement('button');
-            button.className = groupname + '-button';
-            // link to element
-            button.element = element;
-            // button content
-            buttonCounter++;
-            button.innerHTML = buttonInnerHtml + ' ' + buttonCounter;
-
-            /*
-            // choose properties according to hint class
-            if (isInstance(hint, 'solution')) {
-                button.innerHTML = 'Λύση';
-            } else {
-                hintCounter++;
-                button.innerHTML = 'Υπόδειξη ' + hintCounter;
-            }
-            */
-            // click event
-            button.onclick = function() {
-                if (this.hasAttribute('active')) {
-                    // clicked on active element » deactivate
-                    this.removeAttribute('active');
-                    hide(this.element);
-                    this.parentNode.active = null;
-                } else {
-                    // clicked on inactive element » activate
-                    if (this.parentNode.active) {
-                        // deactivate active element
-                        this.parentNode.active.removeAttribute('active');
-                        hide(this.parentNode.active.element);
-                    }
-                    // activate this element
-                    this.setAttribute('active', '');
-                    show(this.element);
-                    this.parentNode.active = this;
-                }
-            }
-            buttons.appendChild(button);
-        }
-        // place the buttons before the hints
-        group.parentNode.insertBefore(buttons, group.parentNode.firstChild);
-    }
-}
-
-
-////
-
-function handleSteps() {
-    // retrieve all steps
-    var steps = document.querySelectorAll('div.step');
-    stepindex = 1;
-    for (var step of steps) {
-        var headingDiv = document.createElement('div');
-        headingDiv.className = 'step-heading';
-        // make a step heading
-        var heading = document.createElement('h3');
-        heading.innerHTML = 'Βήμα ' + stepindex;
-        // make an expand/collapse button
-        var button = document.createElement('button');
-        button.className = 'expand-button';
-        button.setAttribute('expanded', '');
-        button.onclick = function() {
-            console.log(step);
-            if (this.hasAttribute('expanded')) {
-                // step is now expanded, so collapse it
-                hide(this.parentNode.nextSibling);
-                this.removeAttribute('expanded');
-            } else {
-                // step is now collapsed, so expand it
-                show(this.parentNode.nextSibling);
-                this.setAttribute('expanded', '');
-            }
-        }
-        // placement
-        headingDiv.appendChild(heading);
-        headingDiv.appendChild(button);
-        step.parentNode.insertBefore(headingDiv, step);
-        stepindex++;
-    }
-}
 
 //// onload
 
@@ -571,8 +453,19 @@ document.body.onload = function() {
     // handleHints();
     var hintFilter = classFilter('hint');
     handleGroup(hintFilter, 'hint', 'Υπόδειξη');
+
+    /* for hints: re-implement special button for solution
+    // choose properties according to hint class
+    if (isInstance(hint, 'solution')) {
+        button.innerHTML = 'Λύση';
+    } else {
+        hintCounter++;
+        button.innerHTML = 'Υπόδειξη ' + hintCounter;
+    }
+    */
+
     //
-    // handleQuestions();
     var questionFilter = classFilter('question');
     handleGroup(questionFilter, 'question', 'Ερώτηση');
+    handleQuestions();
 }
