@@ -70,15 +70,19 @@ function nextSiblingByClass(element, cls=element.className) {
 }
 
 function classFilter(cls) {
-    return function(element) {
+    var filterFunction = function(element) {
         return isInstance(element, cls);
     }
+    filterFunction.selector = "." + cls;
+    return filterFunction;
 }
 
 function tagFilter(tag) {
-    return function(element) {
+    var filterFunction = function(element) {
         return element.nodeName == tag;
     }
+    filterFunction.selector = tag;
+    return filterFunction;
 }
 
 function nextSiblingFilter(element, filter) {
@@ -406,6 +410,7 @@ function handleQuestions() {
 }
 */
 
+/*
 function handleQuestions() {
     var filter = tagFilter('ASIDE');
     // find all closed form questions with a single answer
@@ -448,6 +453,73 @@ function handleQuestions() {
         }
     }
 }
+*/
+
+function handleGroup(filter, groupname, buttonInnerHtml) {
+    // find the first element for each group of elements
+    var firstSelector = ':not(' + filter.selector + ') + ' + filter.selector;
+    var firsts = document.querySelectorAll(firstSelector);
+    for (var first of firsts) {
+        // create a container div for the group and place it
+        var container = document.createElement('div');
+        container.className = groupname + 'group-container';
+        first.parentNode.insertBefore(container, first);
+        // move all sibling elements into a group div and place it in the container
+        var group = groupByFilter(first, filter, groupname + '-group');
+        container.appendChild(group);
+        hideAll(group.childNodes);
+        // create container div for the buttons and place it
+        var buttons = document.createElement('div');
+        buttons.className = 'group-buttons ' + groupname + '-group-buttons';
+        buttons.active = null;
+        var buttonCounter = 0;
+        for (element of group.childNodes) {
+            // create button
+            var button = document.createElement('button');
+            button.className = groupname + '-button';
+            // link to element
+            button.element = element;
+            // button content
+            buttonCounter++;
+            button.innerHTML = buttonInnerHtml + ' ' + buttonCounter;
+
+            /*
+            // choose properties according to hint class
+            if (isInstance(hint, 'solution')) {
+                button.innerHTML = 'Λύση';
+            } else {
+                hintCounter++;
+                button.innerHTML = 'Υπόδειξη ' + hintCounter;
+            }
+            */
+            // click event
+            button.onclick = function() {
+                if (this.hasAttribute('active')) {
+                    // clicked on active element » deactivate
+                    this.removeAttribute('active');
+                    hide(this.element);
+                    this.parentNode.active = null;
+                } else {
+                    // clicked on inactive element » activate
+                    if (this.parentNode.active) {
+                        // deactivate active element
+                        this.parentNode.active.removeAttribute('active');
+                        hide(this.parentNode.active.element);
+                    }
+                    // activate this element
+                    this.setAttribute('active', '');
+                    show(this.element);
+                    this.parentNode.active = this;
+                }
+            }
+            buttons.appendChild(button);
+        }
+        // place the buttons before the hints
+        group.parentNode.insertBefore(buttons, group.parentNode.firstChild);
+    }
+}
+
+
 ////
 
 function handleSteps() {
@@ -496,7 +568,11 @@ document.body.onload = function() {
     //
     handleExplanations();
     //
-    handleHints();
+    // handleHints();
+    var hintFilter = classFilter('hint');
+    handleGroup(hintFilter, 'hint', 'Υπόδειξη');
     //
-    handleQuestions();
+    // handleQuestions();
+    var questionFilter = classFilter('question');
+    handleGroup(questionFilter, 'question', 'Ερώτηση');
 }
