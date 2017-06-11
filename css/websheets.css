@@ -12,11 +12,6 @@ body {
     padding-left: 120px;
     min-width: 500px;
     max-width: 800px;
-    /*
-    margin-left: 120px;
-    position: relative;
-    left:120px;
-    */
 }
 
 /*
@@ -30,12 +25,6 @@ body {
     height: 80%;
     min-height: 500px;
     margin-left: 32px;
-}
-*/
-
-/*
-h1, section h2, section p {
-    padding-left: 20px;
 }
 */
 
@@ -104,43 +93,18 @@ div.step-heading button {
     margin-top: 0.5em;
 }
 
-/*
-div.step-heading button {
-    float: right;
-    width: 16px;
-    height: 16px;
-    padding: 8px;
-    border: none;
-    background-color: transparent;
-    margin-top: 0.5em;
+div.step-heading button[expanded] {
+    background-image: url('icons/down.svg');
 }
-*/
 
 div.step-heading button:not([expanded]) {
     background-image: url('icons/right.svg');
 }
 
-div.step-heading button[expanded] {
-    background-image: url('icons/down.svg');
-}
-
-/*
-section > div.step::before {
-    font-family: 'Ubuntu Condensed', sans-serif;
-    font-size: 125%;
-    content: attr(value);
-    padding: 12px;
-    height: 24px;
-    background-color: rgb(0, 120, 128);
-    color: white;
-    float: left;
-    margin-left: -60px;
-}
-*/
-
 section > div.step {
     position: relative;
 }
+
 
 /*
     navigation buttons
@@ -247,12 +211,25 @@ pre > code a {
     background-color: rgb(255, 255, 232);
 }
 
+/*
 .hint-button {
     position: relative;
     font-family: 'Ubuntu Condensed', sans-serif;
     color: rgb(0, 164, 128);
     border: 2px solid rgb(0, 164, 128);
     border-radius: 20px;
+    background-color: rgb(255, 255, 255);
+    padding: 6px 18px 6px 18px;
+    margin: 12px 8px 12px 0px;
+}
+*/
+
+.hint-button {
+    position: relative;
+    font-family: 'Ubuntu Condensed', sans-serif;
+    color: rgb(0, 164, 128);
+    border: none;
+    border-bottom: 1px solid rgb(0, 164, 128);
     background-color: rgb(255, 255, 255);
     padding: 6px 18px 6px 18px;
     margin: 12px 8px 12px 0px;
