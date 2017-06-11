@@ -125,6 +125,10 @@ function groupByFilter(first, filter, name) {
 }
 
 function handleGroup(filter, groupname, buttonInnerHtml) {
+    // Moves a group of elements into a div, creates hide/show buttons
+    // for these elements and places both buttons and elements into a
+    // container div.
+
     // find the first element for each group of elements
     var firstSelector = ':not(' + filter.selector + ') + ' + filter.selector;
     var firsts = document.querySelectorAll(firstSelector);
@@ -148,19 +152,10 @@ function handleGroup(filter, groupname, buttonInnerHtml) {
             button.className = 'group-button ' + groupname + '-button';
             // link to element
             button.element = element;
+            element.button = button;
             // button content
             buttonCounter++;
             button.innerHTML = buttonInnerHtml + ' ' + buttonCounter;
-
-            /*
-            // choose properties according to hint class
-            if (isInstance(hint, 'solution')) {
-                button.innerHTML = 'Λύση';
-            } else {
-                hintCounter++;
-                button.innerHTML = 'Υπόδειξη ' + hintCounter;
-            }
-            */
             // click event
             button.onclick = function() {
                 if (this.hasAttribute('active')) {
@@ -214,34 +209,52 @@ function link(elements) {
     elements[elements.length-1].next = null;
 }
 
+/*
+//// generally useful function...
 
-//// functions for automatic step handling
+function toggleAttribute(element, attribute) {
+    if (element.hasAttribute(attribute))
+        element.removeAttribute(attribute);
+    else
+        element.setAttribute(attribute, "");
+}
+*/
+
+
+//// function for automatic step handling
+
+function ECStepButtonHandler() {
+    if (this.hasAttribute('expanded')) {
+        // step is now expanded, so collapse it
+        hide(this.parentNode.nextSibling);
+        this.removeAttribute('expanded');
+    } else {
+        // step is now collapsed, so expand it
+        show(this.parentNode.nextSibling);
+        this.setAttribute('expanded', '');
+    }
+}
 
 function handleSteps() {
+    // Prepends a 'step-heading' div to each 'div.step' element.
+    // Each 'step-heading' div contains an auto-numbered 'h3' and
+    // an expand/collapse button for the step contents.
+
     // retrieve all steps
     var steps = document.querySelectorAll('div.step');
     stepindex = 1;
     for (var step of steps) {
+        // create the 'step-heading' div
         var headingDiv = document.createElement('div');
         headingDiv.className = 'step-heading';
-        // make a step heading
+        // make an auto-numbered h3 heading for the step
         var heading = document.createElement('h3');
         heading.innerHTML = 'Βήμα ' + stepindex;
         // make an expand/collapse button
         var button = document.createElement('button');
         button.className = 'expand-button';
         button.setAttribute('expanded', '');
-        button.onclick = function() {
-            if (this.hasAttribute('expanded')) {
-                // step is now expanded, so collapse it
-                hide(this.parentNode.nextSibling);
-                this.removeAttribute('expanded');
-            } else {
-                // step is now collapsed, so expand it
-                show(this.parentNode.nextSibling);
-                this.setAttribute('expanded', '');
-            }
-        }
+        button.onclick = ECStepButtonHandler;
         // placement
         headingDiv.appendChild(heading);
         headingDiv.appendChild(button);
@@ -253,18 +266,46 @@ function handleSteps() {
 
 //// functions to create and handle navigation buttons for sections
 
+function handleSectioning() {
+    // Inserts a 'section-heading' div at the beginning of each section.
+    // Each 'section-heading' div contains the section title (drawn from the
+    // 'h2' section heading, if it exists) and an auto-numbered 'h4' sub-title
+
+    sectionIndex = 1;
+    for (var section of document.querySelectorAll('section')) {
+        // retrieve the section's heading
+        var heading = nextSiblingFilter(section.firstChild, tagFilter('H2'));
+        // creating the 'section-heading' div and insert it
+        var headingDiv = document.createElement('div');
+        headingDiv.className = 'section-heading';
+        section.insertBefore(headingDiv, section.firstChild);
+        // create the subheading with the section's number and insert it
+        var subheading = document.createElement(heading ? 'h4' : 'h2');
+        subheading.innerHTML = 'Ενότητα ' + sectionIndex;
+        headingDiv.appendChild(subheading);
+        // now insert the section heading into the div, if it exists
+        if (heading) {
+            section.title = heading.textContent;
+            headingDiv.appendChild(heading);
+        } else {
+            section.title = subheading.textContent;
+        }
+        sectionIndex++;
+    }
+}
+
 function handleNavigation() {
+    // Adds a 'nav-button' div to the end of each section.
+    // Each 'nav-button' div contains a 'prev-button' and a 'next-button'.
 
     // retrieve all sections
     var sections = document.querySelectorAll('section');
     link(sections);
-
     sectionIndex = 0;
     for (var section of sections) {
-
+        // create a 'nav-buttons' container for the prev/next navigation buttons
         var buttons = document.createElement('div');
         buttons.className = 'nav-buttons';
-
         // create the "previous" button
         var prev = document.createElement('button');
         prev.className = 'nav-button prev-button';
@@ -317,40 +358,8 @@ function handleNavigation() {
     showSingle(sections, 0);
 }
 
-function handleSectioning() {
-    sectionIndex = 1;
-    for (var section of document.querySelectorAll('section')) {
-        // retrieve the section's heading
-        // var heading = nextSiblingByTag(section.firstChild, 'h2');
-        var heading = nextSiblingFilter(section.firstChild, tagFilter('H2'));
-        // creating the 'section-heading' div and insert it
-        var headingDiv = document.createElement('div');
-        headingDiv.className = 'section-heading';
-        section.insertBefore(headingDiv, section.firstChild);
-        // create the subheading with the section's number and insert it
-        var subheading = document.createElement(heading ? 'h4' : 'h2');
-        var subheadingTxt = document.createTextNode('Ενότητα ' + sectionIndex);
-        subheading.appendChild(subheadingTxt);
-        headingDiv.appendChild(subheading);
-        // now insert the section heading into the div, if it exists
-        if (heading) {
-            section.title = heading.textContent;
-            headingDiv.appendChild(heading);
-        } else {
-            section.title = subheadingTxt.textContent;
-        }
-        sectionIndex++;
-    }
-}
 
 //// functions for code explanations
-
-function toggleAttribute(element, attribute) {
-    if (element.hasAttribute(attribute))
-        element.removeAttribute(attribute);
-    else
-        element.setAttribute(attribute, "");
-}
 
 function highlightLinked() {
     this.setAttribute('highlighted', "");
@@ -363,13 +372,22 @@ function unhighlightLinked() {
 }
 
 function handleExplanations() {
+    // Retrieves all <aside> elements that follow code blocks and groups them
+    // into an 'explanation-group' div.
+    // It then retrieves all <a> elements inside the code segment and links them
+    // to the corresponding 'aside' explanations.
+
+    // check what is the best way of detecting links between code and explanations
+    // should adopt the most flexible/readable approach for the person writing
+
     var filter = tagFilter('ASIDE');
     // find all code blocks
     var blocks = document.querySelectorAll("pre > code");
     for (var block of blocks) {
+        // check if an explanation follows the code block
         explanation = nextSiblingFilter(block.parentNode, filter);
         if (explanation) {
-            //
+            // group all explanations into an 'explanation-group' div
             explanationDiv = groupByFilter(explanation, filter, 'explanation-group');
             block.parentNode.parentNode.insertBefore(explanationDiv, block.parentNode);
             explanation = explanationDiv.firstChild;
@@ -385,7 +403,6 @@ function handleExplanations() {
                 segment.onmouseover = highlightLinked;
                 segment.onmouseout = unhighlightLinked;
                 // move to next explanation
-                // explanation = nextSiblingByTag(explanation, 'aside');
                 explanation = explanation.nextSibling;
             }
         }
@@ -441,30 +458,19 @@ function handleQuestions() {
 //// onload
 
 document.body.onload = function() {
-    //
+    // add auto-numbered collapsible headings before each step
     handleSteps();
-    //
+    // add section headers and navigation buttons
     handleSectioning();
-    //
-    handleNavigation();
-    //
+    handleNavigation();     // check if navigation button handling should change
+    // link code segments to their corresponding explanations
     handleExplanations();
-    //
-    // handleHints();
+    // create buttons for all hints
     var hintFilter = classFilter('hint');
     handleGroup(hintFilter, 'hint', 'Υπόδειξη');
-
-    /* for hints: re-implement special button for solution
-    // choose properties according to hint class
-    if (isInstance(hint, 'solution')) {
-        button.innerHTML = 'Λύση';
-    } else {
-        hintCounter++;
-        button.innerHTML = 'Υπόδειξη ' + hintCounter;
-    }
-    */
-
-    //
+    var solutions = document.querySelectorAll('.solution');
+    for (var solution of solutions) solution.button.innerHTML = 'Λύση';
+    // create buttons for all questions, along with answer-checking mechanism
     var questionFilter = classFilter('question');
     handleGroup(questionFilter, 'question', 'Ερώτηση');
     handleQuestions();
