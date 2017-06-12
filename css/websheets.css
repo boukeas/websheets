@@ -168,6 +168,10 @@ div.nav-buttons:after {
     code (additional to prettify.css)
 */
 
+pre > code a {
+    cursor: default;
+}
+
 code a::after {
     content: url('icons/cursor.svg');
     margin-left: 6px;
@@ -179,16 +183,19 @@ code a[highlighted] {
     text-decoration: underline dotted;
 }
 
-div.explanation-group aside[highlighted] {
-    background-color: rgb(232, 255, 255);
+div.code-container {
+    position: relative;
 }
 
-div.explanation-group {
+/* displays explanations as sidenotes */
+div.explanation-group[sidenote] {
     position: absolute;
+    left: 100%;
+    top: 0px;
     margin-left: 16px;
     width: 240px;
-    left: 100%;
 }
+/**/
 
 div.explanation-group aside {
     padding: 6px 16px 6px 16px;
@@ -196,9 +203,10 @@ div.explanation-group aside {
     font-weight: 300;
 }
 
-pre > code a {
-    cursor: default;
+div.explanation-group aside[highlighted] {
+    background-color: rgb(232, 255, 255);
 }
+
 
 /*
     hints

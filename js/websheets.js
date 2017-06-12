@@ -387,12 +387,21 @@ function handleExplanations() {
         // check if an explanation follows the code block
         explanation = nextSiblingFilter(block.parentNode, filter);
         if (explanation) {
-            // group all explanations into an 'explanation-group' div
-            explanationDiv = groupByFilter(explanation, filter, 'explanation-group');
-            block.parentNode.parentNode.insertBefore(explanationDiv, block.parentNode);
-            explanation = explanationDiv.firstChild;
+            // create a container div for the code and explanations
+            var container = document.createElement('div');
+            container.className = 'code-container';
+            block.parentNode.parentNode.insertBefore(container, block.parentNode);
+            // place the code block in the container
+            container.appendChild(block.parentNode);
+            // group all explanations into an 'explanation-group' div and place it
+            var group = groupByFilter(explanation, filter, 'explanation-group');
+            container.appendChild(group);
+            //// important, to be made parametric:
+            //// this line determines if explanations are to be displayed on the side
+            //// group.setAttribute('sidenote', '');
             // find all code segments in the block which link to an explanation
             var explained = block.querySelectorAll("a");
+            explanation = group.firstChild;
             for (var segment of explained) {
                 // link segment to explanation (via object properties)
                 segment.linked = explanation;
