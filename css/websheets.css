@@ -242,6 +242,11 @@ div.explanation-group aside[highlighted] {
     background-color: rgb(0, 164, 128);
 }
 
+.group-button:hover {
+    filter: grayscale(100%);
+    filter: opacity(50%);
+}
+
 .group-button[active]::after {
     width: 0;
     height: 0;
