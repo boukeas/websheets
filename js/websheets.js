@@ -85,7 +85,20 @@ function tagFilter(tag) {
     return filterFunction;
 }
 
-function nextSiblingFilter(element, filter) {
+function previousSiblingFilter(element, filter=function(element) { return true; }) {
+    var current = element.previousSibling;
+    while (true) {
+        if (!current) return null;
+        if (current.nodeType == 1)
+            if (filter(current))
+                return current;
+            else
+                return null;
+        current = current.previousSibling;
+    }
+}
+
+function nextSiblingFilter(element, filter=function(element) { return true; }) {
     var current = element.nextSibling;
     while (true) {
         if (!current) return null;
@@ -124,38 +137,28 @@ function groupByFilter(first, filter, name) {
     return container;
 }
 
-function handleGroup(filter, groupname, buttonInnerHtml) {
-    // Moves a group of elements into a div, creates hide/show buttons
-    // for these elements and places both buttons and elements into a
-    // container div.
-
-    // find the first element for each group of elements
-    var firstSelector = ':not(' + filter.selector + ') + ' + filter.selector;
-    var firsts = document.querySelectorAll(firstSelector);
-    for (var first of firsts) {
-        // create a container div for the group and place it
-        var container = document.createElement('div');
-        container.className = groupname + 'group-container';
-        first.parentNode.insertBefore(container, first);
-        // move all sibling elements into a group div and place it in the container
-        var group = groupByFilter(first, filter, groupname + '-group');
-        container.appendChild(group);
+function addGroupButtons(name, buttonTxt) {
+    var containers = document.querySelectorAll('.' + name + '-container');
+    for (var container of containers) {
+        // retrieve the group inside the container
+        // the buttons will correspond to the children of this group
+        var group = container.firstChild;
         hideAll(group.childNodes);
-        // create container div for the buttons and place it
+        // create div for the buttons
         var buttons = document.createElement('div');
-        buttons.className = groupname + '-group-buttons';
+        buttons.className = name + '-group-buttons';
         buttons.active = null;
         var buttonCounter = 0;
-        for (element of group.childNodes) {
+        for (var element of group.childNodes) {
             // create button
             var button = document.createElement('button');
-            button.className = 'group-button ' + groupname + '-button';
+            button.className = 'group-button ' + name + '-button';
             // link to element
             button.element = element;
             element.button = button;
             // button content
             buttonCounter++;
-            button.innerHTML = buttonInnerHtml + ' ' + buttonCounter;
+            button.innerHTML = buttonTxt + ' ' + buttonCounter;
             // click event
             button.onclick = function() {
                 if (this.hasAttribute('active')) {
@@ -178,8 +181,25 @@ function handleGroup(filter, groupname, buttonInnerHtml) {
             }
             buttons.appendChild(button);
         }
-        // place the buttons before the hints
-        group.parentNode.insertBefore(buttons, group.parentNode.firstChild);
+        // place the buttons before the group
+        container.insertBefore(buttons, container.firstChild);
+    }
+}
+
+function handleGroup(filter, groupName, containerName=groupName) {
+    // Groups elements into a div and places the group inside a container div
+
+    // find the first element for each group of elements
+    var firstSelector = ':not(' + filter.selector + ') + ' + filter.selector;
+    var firsts = document.querySelectorAll(firstSelector);
+    for (var first of firsts) {
+        // create a container div for the group and place it
+        var container = document.createElement('div');
+        container.className = containerName + '-container';
+        first.parentNode.insertBefore(container, first);
+        // move all sibling elements into a group div and place it in the container
+        var group = groupByFilter(first, filter, groupName + '-group');
+        container.appendChild(group);
     }
 }
 
@@ -371,6 +391,7 @@ function unhighlightLinked() {
     this.linked.removeAttribute('highlighted');
 }
 
+/*
 function handleExplanations() {
     // Retrieves all <aside> elements that follow code blocks and groups them
     // into an 'explanation-group' div.
@@ -417,6 +438,80 @@ function handleExplanations() {
         }
     }
 }
+*/
+
+function handleExplanations() {
+    // Retrieves all <aside> elements that follow code blocks and groups them
+    // into an 'explanation-group' div.
+    // It then retrieves all <a> elements inside the code segment and links them
+    // to the corresponding 'aside' explanations.
+
+    var containers = document.querySelectorAll('.sidenote-container');
+    for (var container of containers) {
+        var block = previousSiblingFilter(container);
+        if (block.nodeName == 'PRE') {
+            // find all code segments in the block which link to an explanation
+            var explained = block.querySelectorAll("a");
+            var explanation = container.firstChild.firstChild;
+            while (explanation && explanation.hasAttribute('orphan')) explanation = explanation.nextSibling;
+            for (var segment of explained) {
+                // link segment to explanation (via object properties)
+                segment.linked = explanation;
+                explanation.linked = segment;
+                // attach event listeners to segments and explanations
+                explanation.onmouseover = highlightLinked;
+                explanation.onmouseout = unhighlightLinked;
+                segment.onmouseover = highlightLinked;
+                segment.onmouseout = unhighlightLinked;
+                // move to next explanation
+                explanation = explanation.nextSibling;
+                while (explanation && explanation.hasAttribute('orphan'))
+                    explanation = explanation.nextSibling;
+            }
+            container.insertBefore(block, container.firstChild);
+        }
+    }
+
+    /*var containerFilter = classFilter('sidenote-container');
+    var blocks = document.querySelectorAll("pre.prettyprint");
+    for (var block of blocks) {
+        // check if an explanation follows the code block
+        // explanation = nextSiblingFilter(block.parentNode, filter);
+        var container = nextSiblingFilter(block, )
+        if (block.nextSibling.className == 'sidenote-container') {
+            /*
+            // create a container div for the code and explanations
+            var container = document.createElement('div');
+            container.className = 'code-container';
+            block.parentNode.parentNode.insertBefore(container, block.parentNode);
+            // place the code block in the container
+            container.appendChild(block.parentNode);
+            // group all explanations into an 'explanation-group' div and place it
+            var group = groupByFilter(explanation, filter, 'explanation-group');
+            container.appendChild(group);
+            //// important, to be made parametric:
+            //// this line determines if explanations are to be displayed on the side
+            //// group.setAttribute('sidenote', '');
+            // find all code segments in the block which link to an explanation
+            var explained = block.querySelectorAll("a");
+            explanation = group.firstChild;
+            for (var segment of explained) {
+                // link segment to explanation (via object properties)
+                segment.linked = explanation;
+                explanation.linked = segment;
+                // attach event listeners to segments and explanations
+                explanation.onmouseover = highlightLinked;
+                explanation.onmouseout = unhighlightLinked;
+                segment.onmouseover = highlightLinked;
+                segment.onmouseout = unhighlightLinked;
+                // move to next explanation
+                explanation = explanation.nextSibling;
+            }
+        }
+    }
+    */
+}
+
 
 //// functions for closed form questions and immediate feedback
 
@@ -472,15 +567,19 @@ document.body.onload = function() {
     // add section headers and navigation buttons
     handleSectioning();
     handleNavigation();     // check if navigation button handling should change
-    // link code segments to their corresponding explanations
-    handleExplanations();
     // create buttons for all hints
     var hintFilter = classFilter('hint');
-    handleGroup(hintFilter, 'hint', 'Υπόδειξη');
+    handleGroup(hintFilter, 'hint');
+    addGroupButtons('hint', 'Υπόδειξη');
     var solutions = document.querySelectorAll('.solution');
     for (var solution of solutions) solution.button.innerHTML = 'Λύση';
     // create buttons for all questions, along with answer-checking mechanism
     var questionFilter = classFilter('question');
-    handleGroup(questionFilter, 'question', 'Ερώτηση');
+    handleGroup(questionFilter, 'question');
+    addGroupButtons('question', 'Ερώτηση');
     handleQuestions();
+    //
+    var sidenoteFilter = tagFilter('ASIDE');
+    handleGroup(sidenoteFilter, 'sidenote');
+    handleExplanations();
 }
