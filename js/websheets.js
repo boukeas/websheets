@@ -34,6 +34,8 @@ function groupSelected(current, selector, name) {
     // create a container div for the group
     var container = document.createElement('div');
     container.className = name;
+    // placement
+    current.parentNode.insertBefore(container, current);
     // find sibling elements and move them in the container div
     while (current) {
         // find next element before appending current one
@@ -94,20 +96,27 @@ function addGroupButtons(name, buttonTxt) {
     }
 }
 
-function handleGroup(selector, groupName, containerName=groupName) {
-    // Groups elements into a div and places the group inside a container div
+function handleGroup(preselector, selector, groupName, containerName=groupName) {
+    // Groups successive selected elements into a group div.
+    // Optionally places the group div inside a container div.
 
     // find the first element for each group of elements
-    var firstSelector = ':not(' + selector + ') + ' + selector;
-    var firsts = document.querySelectorAll(firstSelector);
-    for (var first of firsts) {
-        // create a container div for the group and place it
-        var container = document.createElement('div');
-        container.className = containerName + '-container';
-        first.parentNode.insertBefore(container, first);
-        // move all sibling elements into a group div and place it in the container
-        var group = groupSelected(first, selector, groupName + '-group');
-        container.appendChild(group);
+    var firsts = document.querySelectorAll(preselector + ' + ' + selector);
+    if (containerName) {
+        for (var first of firsts) {
+            // move all sibling elements into a group div
+            var group = groupSelected(first, selector, groupName + '-group');
+            // create a container to hold the group
+            var container = document.createElement('div');
+            container.className = containerName + '-container';
+            group.parentNode.insertBefore(container, group);
+            container.appendChild(group);
+        }
+    } else {
+        for (var first of firsts) {
+            // move all sibling elements into a group div
+            groupSelected(first, selector, groupName + '-group');
+        }
     }
 }
 
@@ -305,30 +314,28 @@ function handleExplanations() {
     // It then retrieves all <a> elements inside the code segment and links them
     // to the corresponding 'aside' explanations.
 
-    var containers = document.querySelectorAll('.sidenote-container');
+    var containers = document.querySelectorAll('pre.prettyprint + div.sidenote-container');
     for (var container of containers) {
         var block = node_before(container);
-        if (block.nodeName == 'PRE') {
-            // find all code segments in the block which link to an explanation
-            var explained = block.querySelectorAll("a");
-            var explanation = container.firstChild.firstChild;
-            while (explanation && explanation.hasAttribute('orphan')) explanation = explanation.nextSibling;
-            for (var segment of explained) {
-                // link segment to explanation (via object properties)
-                segment.linked = explanation;
-                explanation.linked = segment;
-                // attach event listeners to segments and explanations
-                explanation.onmouseover = highlightLinked;
-                explanation.onmouseout = unhighlightLinked;
-                segment.onmouseover = highlightLinked;
-                segment.onmouseout = unhighlightLinked;
-                // move to next explanation
+        // find all code segments in the block which link to an explanation
+        var explained = block.querySelectorAll("a");
+        var explanation = container.firstChild.firstChild;
+        while (explanation && explanation.hasAttribute('orphan')) explanation = explanation.nextSibling;
+        for (var segment of explained) {
+            // link segment to explanation (via object properties)
+            segment.linked = explanation;
+            explanation.linked = segment;
+            // attach event listeners to segments and explanations
+            explanation.onmouseover = highlightLinked;
+            explanation.onmouseout = unhighlightLinked;
+            segment.onmouseover = highlightLinked;
+            segment.onmouseout = unhighlightLinked;
+            // move to next explanation
+            explanation = explanation.nextSibling;
+            while (explanation && explanation.hasAttribute('orphan'))
                 explanation = explanation.nextSibling;
-                while (explanation && explanation.hasAttribute('orphan'))
-                    explanation = explanation.nextSibling;
-            }
-            container.insertBefore(block, container.firstChild);
         }
+        container.insertBefore(block, container.firstChild);
     }
 }
 
@@ -387,15 +394,15 @@ document.body.onload = function() {
     handleSectioning();
     handleNavigation();     // check if navigation button handling should change
     // create buttons for all hints
-    handleGroup('.hint', 'hint');
+    handleGroup(':not(.hint)', '.hint', 'hint');
     addGroupButtons('hint', 'Υπόδειξη');
     var solutions = document.querySelectorAll('.solution');
     for (var solution of solutions) solution.button.innerHTML = 'Λύση';
     // create buttons for all questions, along with answer-checking mechanism
-    handleGroup('.question', 'question');
+    handleGroup(':not(.question)', '.question', 'question');
     addGroupButtons('question', 'Ερώτηση');
     handleQuestions();
     //
-    handleGroup('aside', 'sidenote');
+    handleGroup('pre.prettyprint', 'aside', 'sidenote');
     handleExplanations();
 }

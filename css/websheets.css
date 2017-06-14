@@ -265,6 +265,7 @@ div.sidenote-container > pre.prettyprint + div.sidenote-group aside[highlighted]
     questions
 */
 
+/*
 div.feedback-group {
     position: absolute;
     margin-left: 16px;
@@ -277,6 +278,7 @@ div.feedback-group aside {
     color: rgb(112, 112, 112);
     font-weight: 300;
 }
+*/
 
 div.question fieldset label {
     display: block;
@@ -288,26 +290,13 @@ fieldset {
     padding: 0;
 }
 
-div.question label {
-    padding: 6px 12px 6px 12px;
-    vertical-align: middle;
-}
-
 div.question input {
     margin-right: 12px;
 }
 
 div.question label {
-    padding: 0.25em 1em 0.25em 1em;
-}
-
-div.question label[highlighted] {
-    padding-top: 0.75em;
-    padding-bottom: 0.75em;
-}
-
-div.question label aside {
-    margin-top: 0.75em;
+    padding: 0.5em 1em 0.5em 1em;
+    position:relative;
 }
 
 div.question label[highlighted]:not([correct]) {
@@ -316,6 +305,25 @@ div.question label[highlighted]:not([correct]) {
 
 div.question label[highlighted][correct] {
     background-color: rgb(192, 255, 192);
+}
+
+div.question label aside[sidenote] {
+    position: absolute;
+    left: 100%;
+    top: 0px;
+    margin-left: 16px;
+    width: 240px;
+
+    padding: 6px 16px 6px 16px;
+    color: rgb(112, 112, 112);
+    font-weight: 300;
+}
+
+div.question label aside:not([sidenote]) {
+    margin-left: 16px;
+    padding: 6px 16px 6px 16px;
+    color: rgb(112, 112, 112);
+    font-weight: 300;
 }
 
 .feedback-button {
