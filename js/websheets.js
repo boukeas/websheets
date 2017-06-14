@@ -1,3 +1,5 @@
+'use strict';
+
 //// functions for hiding or revealing elements
 
 function hide(element) {
@@ -7,7 +9,7 @@ function hide(element) {
 
 function hideAll(elements) {
     // hide all elements in the list
-    for (var element of elements) hide(element);
+    for (let element of elements) hide(element);
 }
 
 function show(element, display='block') {
@@ -31,8 +33,9 @@ function nextSelectedSibling(element, selector) {
 }
 
 function groupSelected(current, selector, name) {
+    let next;
     // create a container div for the group
-    var container = document.createElement('div');
+    let container = document.createElement('div');
     container.className = name;
     // placement
     current.parentNode.insertBefore(container, current);
@@ -40,7 +43,7 @@ function groupSelected(current, selector, name) {
     while (current) {
         // find next element before appending current one
         // otherwise the sibling 'connection' between them is lost
-        var next = nextSelectedSibling(current, selector);
+        next = nextSelectedSibling(current, selector);
         container.appendChild(current);
         current = next;
     }
@@ -48,20 +51,21 @@ function groupSelected(current, selector, name) {
 }
 
 function addGroupButtons(name, buttonTxt) {
-    var containers = document.querySelectorAll('.' + name + '-container');
-    for (var container of containers) {
+    let group, button, buttons, buttonCounter;
+    let containers = document.querySelectorAll('.' + name + '-container');
+    for (let container of containers) {
         // retrieve the group inside the container
         // the buttons will correspond to the children of this group
-        var group = container.firstChild;
+        group = container.firstChild;
         hideAll(group.childNodes);
         // create div for the buttons
-        var buttons = document.createElement('div');
+        buttons = document.createElement('div');
         buttons.className = name + '-group-buttons';
         buttons.active = null;
-        var buttonCounter = 0;
-        for (var element of group.childNodes) {
+        buttonCounter = 0;
+        for (let element of group.childNodes) {
             // create button
-            var button = document.createElement('button');
+            button = document.createElement('button');
             button.className = 'group-button ' + name + '-button';
             // link to element
             button.element = element;
@@ -100,20 +104,21 @@ function handleGroup(preselector, selector, groupName, containerName=groupName) 
     // Groups successive selected elements into a group div.
     // Optionally places the group div inside a container div.
 
+    let group, container;
     // find the first element for each group of elements
-    var firsts = document.querySelectorAll(preselector + ' + ' + selector);
+    let firsts = document.querySelectorAll(preselector + ' + ' + selector);
     if (containerName) {
-        for (var first of firsts) {
+        for (let first of firsts) {
             // move all sibling elements into a group div
-            var group = groupSelected(first, selector, groupName + '-group');
+            group = groupSelected(first, selector, groupName + '-group');
             // create a container to hold the group
-            var container = document.createElement('div');
+            container = document.createElement('div');
             container.className = containerName + '-container';
             group.parentNode.insertBefore(container, group);
             container.appendChild(group);
         }
     } else {
-        for (var first of firsts) {
+        for (let first of firsts) {
             // move all sibling elements into a group div
             groupSelected(first, selector, groupName + '-group');
         }
@@ -125,8 +130,8 @@ function handleGroup(preselector, selector, groupName, containerName=groupName) 
 
 function enumerate(elements, start=1) {
     // adds an explicit numerical "value" attribute to the elements
-    var value = start;
-    for (var element of elements) {
+    let value = start;
+    for (let element of elements) {
         element.value = value;
         element.setAttribute('value', value);
         value++;
@@ -138,7 +143,7 @@ function link(elements) {
     // assumes elements.length > 1
     elements[0].prev = null;
     elements[0].next = elements[1];
-    for (var index=1; index < elements.length-1; index++) {
+    for (let index=1; index < elements.length-1; index++) {
         elements[index].prev = elements[index-1];
         elements[index].next = elements[index+1];
     }
@@ -177,18 +182,20 @@ function handleSteps() {
     // Each 'step-heading' div contains an auto-numbered 'h3' and
     // an expand/collapse button for the step contents.
 
+    //
+    let headingDiv, heading, button;
     // retrieve all steps
-    var steps = document.querySelectorAll('div.step');
-    stepindex = 1;
-    for (var step of steps) {
+    let steps = document.querySelectorAll('div.step');
+    let stepindex = 1;
+    for (let step of steps) {
         // create the 'step-heading' div
-        var headingDiv = document.createElement('div');
+        headingDiv = document.createElement('div');
         headingDiv.className = 'step-heading';
         // make an auto-numbered h3 heading for the step
-        var heading = document.createElement('h3');
+        heading = document.createElement('h3');
         heading.innerHTML = 'Βήμα ' + stepindex;
         // make an expand/collapse button
-        var button = document.createElement('button');
+        button = document.createElement('button');
         button.className = 'expand-button';
         button.setAttribute('expanded', '');
         button.onclick = ECStepButtonHandler;
@@ -208,16 +215,17 @@ function handleSectioning() {
     // Each 'section-heading' div contains the section title (drawn from the
     // 'h2' section heading, if it exists) and an auto-numbered 'h4' sub-title
 
-    sectionIndex = 1;
-    for (var section of document.querySelectorAll('section')) {
+    let heading, headingDiv, subheading;
+    let sectionIndex = 1;
+    for (let section of document.querySelectorAll('section')) {
         // retrieve the section's heading
-        var heading = nextSelectedSibling(section.firstChild, 'h2');
+        heading = nextSelectedSibling(section.firstChild, 'h2');
         // creating the 'section-heading' div and insert it
-        var headingDiv = document.createElement('div');
+        headingDiv = document.createElement('div');
         headingDiv.className = 'section-heading';
         section.insertBefore(headingDiv, section.firstChild);
         // create the subheading with the section's number and insert it
-        var subheading = document.createElement(heading ? 'h4' : 'h2');
+        subheading = document.createElement(heading ? 'h4' : 'h2');
         subheading.innerHTML = 'Ενότητα ' + sectionIndex;
         headingDiv.appendChild(subheading);
         // now insert the section heading into the div, if it exists
@@ -235,16 +243,17 @@ function handleNavigation() {
     // Adds a 'nav-button' div to the end of each section.
     // Each 'nav-button' div contains a 'prev-button' and a 'next-button'.
 
+    let buttons, prev, next;
     // retrieve all sections
-    var sections = document.querySelectorAll('section');
+    let sections = document.querySelectorAll('section');
     link(sections);
-    sectionIndex = 0;
-    for (var section of sections) {
+    let sectionIndex = 0;
+    for (let section of sections) {
         // create a 'nav-buttons' container for the prev/next navigation buttons
-        var buttons = document.createElement('div');
+        buttons = document.createElement('div');
         buttons.className = 'nav-buttons';
         // create the "previous" button
-        var prev = document.createElement('button');
+        prev = document.createElement('button');
         prev.className = 'nav-button prev-button';
         if (section.prev) {
             prev.innerHTML = '<div>Προηγούμενη Ενότητα<br>' + section.prev.title + '</div>'
@@ -264,7 +273,7 @@ function handleNavigation() {
         if (!section.prev) prev.disabled = true;
 
         // create the "next" button
-        var next = document.createElement('button');
+        next = document.createElement('button');
         next.className = 'nav-button next-button';
         if (section.next) {
             next.innerHTML = '<div>Επόμενη Ενότητα<br>' + section.next.title + '</div>'
@@ -314,14 +323,16 @@ function handleExplanations() {
     // It then retrieves all <a> elements inside the code segment and links them
     // to the corresponding 'aside' explanations.
 
-    var containers = document.querySelectorAll('pre.prettyprint + div.code-container');
-    for (var container of containers) {
-        var block = node_before(container);
+    let block, explained, explanation;
+    //
+    let containers = document.querySelectorAll('pre.prettyprint + div.code-container');
+    for (let container of containers) {
+        block = node_before(container);
         // find all code segments in the block which link to an explanation
-        var explained = block.querySelectorAll("a");
-        var explanation = container.firstChild.firstChild;
+        explained = block.querySelectorAll("a");
+        explanation = container.firstChild.firstChild;
         while (explanation && explanation.hasAttribute('orphan')) explanation = explanation.nextSibling;
-        for (var segment of explained) {
+        for (let segment of explained) {
             // link segment to explanation (via object properties)
             segment.linked = explanation;
             explanation.linked = segment;
@@ -341,9 +352,10 @@ function handleExplanations() {
 
 function handleSidenotes() {
 
-    var containers = document.querySelectorAll('p + div.sidenote-container');
-    for (var container of containers) {
-        var block = node_before(container);
+    let block;
+    let containers = document.querySelectorAll('p + div.sidenote-container');
+    for (let container of containers) {
+        block = node_before(container);
         container.insertBefore(block, container.firstChild);
     }
 }
@@ -351,18 +363,19 @@ function handleSidenotes() {
 //// functions for closed form questions and immediate feedback
 
 function handleQuestions() {
+    let feedbackButton;
     // find all closed form questions with a single answer
-    var questions = document.querySelectorAll("div.question-single");
-    for (var question of questions) {
+    let questions = document.querySelectorAll("div.question-single");
+    for (let question of questions) {
         // create a feedback button
-        var feedbackButton = document.createElement('button');
+        let feedbackButton = document.createElement('button');
         feedbackButton.className = 'feedback-button';
         feedbackButton.innerHTML = 'Έλεγχος Απάντησης';
         feedbackButton.disabled = true;
         // onclick event handler
         feedbackButton.onclick = function() {
             // retrieve selected answer and display its associated feedback
-            var selected = question.querySelector('input:checked').parentNode;
+            let selected = question.querySelector('input:checked').parentNode;
             selected.setAttribute('highlighted', '');
             if (selected.feedback) show(selected.feedback);
             // disable the feedback button
@@ -370,8 +383,8 @@ function handleQuestions() {
         }
         question.appendChild(feedbackButton);
         // retrieve answers (labels) to the question
-        var answers = question.querySelectorAll("label");
-        for (var answer of answers) {
+        let answers = question.querySelectorAll("label");
+        for (let answer of answers) {
             // make sure the answer isn't checked
             answer.querySelector('input').checked = false;
             // link segment to explanation (via object properties)
@@ -382,10 +395,10 @@ function handleQuestions() {
                 // enable feedback button
                 feedbackButton.disabled = false;
                 // hide active feedback
-                var feedback = question.querySelectorAll('aside');
+                let feedback = question.querySelectorAll('aside');
                 if (feedback) hideAll(feedback);
                 // de-highlight previously highlighted answer
-                var selected = question.querySelector('label[highlighted]');
+                let selected = question.querySelector('label[highlighted]');
                 if (selected) selected.removeAttribute('highlighted');
             }
         }
@@ -404,8 +417,8 @@ document.body.onload = function() {
     // create buttons for all hints
     handleGroup(':not(.hint)', '.hint', 'hint');
     addGroupButtons('hint', 'Υπόδειξη');
-    var solutions = document.querySelectorAll('.solution');
-    for (var solution of solutions) solution.button.innerHTML = 'Λύση';
+    let solutions = document.querySelectorAll('.solution');
+    for (let solution of solutions) solution.button.innerHTML = 'Λύση';
     // create buttons for all questions, along with answer-checking mechanism
     handleGroup(':not(.question)', '.question', 'question');
     addGroupButtons('question', 'Ερώτηση');
