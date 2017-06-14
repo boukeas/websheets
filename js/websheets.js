@@ -314,7 +314,7 @@ function handleExplanations() {
     // It then retrieves all <a> elements inside the code segment and links them
     // to the corresponding 'aside' explanations.
 
-    var containers = document.querySelectorAll('pre.prettyprint + div.sidenote-container');
+    var containers = document.querySelectorAll('pre.prettyprint + div.code-container');
     for (var container of containers) {
         var block = node_before(container);
         // find all code segments in the block which link to an explanation
@@ -339,6 +339,14 @@ function handleExplanations() {
     }
 }
 
+function handleSidenotes() {
+
+    var containers = document.querySelectorAll('p + div.sidenote-container');
+    for (var container of containers) {
+        var block = node_before(container);
+        container.insertBefore(block, container.firstChild);
+    }
+}
 
 //// functions for closed form questions and immediate feedback
 
@@ -403,6 +411,9 @@ document.body.onload = function() {
     addGroupButtons('question', 'Ερώτηση');
     handleQuestions();
     //
-    handleGroup('pre.prettyprint', 'aside', 'sidenote');
+    handleGroup('pre.prettyprint', 'aside', 'sidenote', 'code');
     handleExplanations();
+    //
+    handleGroup('p', 'aside', 'sidenote');
+    handleSidenotes();
 }

@@ -183,16 +183,12 @@ code a[highlighted] {
     text-decoration: underline dotted;
 }
 
-div.code-container {
-    position: relative;
-}
-
-div.sidenote-container {
+div.code-container, div.sidenote-container {
     position: relative;
 }
 
 /* displays explanations as sidenotes */
-div.sidenote-container > pre.prettyprint + div.sidenote-group {
+div.sidenote-group {
     position: absolute;
     left: 100%;
     top: 0px;
@@ -201,13 +197,13 @@ div.sidenote-container > pre.prettyprint + div.sidenote-group {
 }
 /**/
 
-div.sidenote-container > pre.prettyprint + div.sidenote-group aside {
+div.sidenote-group aside {
     padding: 6px 16px 6px 16px;
     color: rgb(112, 112, 112);
     font-weight: 300;
 }
 
-div.sidenote-container > pre.prettyprint + div.sidenote-group aside[highlighted] {
+div.sidenote-group aside[highlighted] {
     background-color: rgb(232, 255, 255);
 }
 
