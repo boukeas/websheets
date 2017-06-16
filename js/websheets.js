@@ -307,15 +307,30 @@ function handleNavigation() {
 
 //// functions for code explanations
 
-function highlightLinked() {
+function highlightExplanation() {
     this.setAttribute('highlighted', "");
+    // go up two levels, from the <a> to <code> to <li>
+    this.linked.parentNode.parentNode.setAttribute('highlighted', "");
+}
+
+function unhighlightExplanation() {
+    this.removeAttribute('highlighted');
+    // go up two levels, from the <a> to <code> to <li>
+    this.linked.parentNode.parentNode.removeAttribute('highlighted');
+}
+
+function highlightSegment() {
+    // go up two levels, from the <a> to <code> to <li>
+    this.parentNode.parentNode.setAttribute('highlighted', "");
     this.linked.setAttribute('highlighted', "");
 }
 
-function unhighlightLinked() {
-    this.removeAttribute('highlighted');
+function unhighlightSegment() {
+    // go up two levels, from the <a> to <code> to <li>
+    this.parentNode.parentNode.removeAttribute('highlighted');
     this.linked.removeAttribute('highlighted');
 }
+
 
 function handleExplanations() {
     // Retrieves all <aside> elements that follow code blocks and groups them
@@ -337,10 +352,10 @@ function handleExplanations() {
             segment.linked = explanation;
             explanation.linked = segment;
             // attach event listeners to segments and explanations
-            explanation.onmouseover = highlightLinked;
-            explanation.onmouseout = unhighlightLinked;
-            segment.onmouseover = highlightLinked;
-            segment.onmouseout = unhighlightLinked;
+            explanation.onmouseover = highlightExplanation;
+            explanation.onmouseout = unhighlightExplanation;
+            segment.onmouseover = highlightSegment;
+            segment.onmouseout = unhighlightSegment;
             // move to next explanation
             explanation = explanation.nextSibling;
             while (explanation && explanation.hasAttribute('orphan'))
