@@ -405,6 +405,15 @@ function handleQuestions() {
     }
 }
 
+//// run this part **before** run_prettify.js
+
+let blocks = document.querySelectorAll('pre.prettyprint');
+for (let block of blocks) {
+    if (!block.classList.contains('linenums')) {
+        block.classList.add('linenums');
+        block.setAttribute('mock-linenums', '');
+    }
+}
 
 //// onload
 

@@ -35,26 +35,27 @@ code, pre.prettyprint {
 pre.prettyprint {
 	position: relative;
 	margin: .5em 0;
-	/*box-shadow: -1px 0px 0px 0px #358ccb, 0px 0px 0px 1px #dfdfdf;*/
 	box-sizing: border-box;
 	margin-bottom: 1em;
-	/* border-left: 10px solid #358ccb; */
     border-left: 10px solid rgb(0, 128, 128);
 	background-color: #f3f3f4;
+    overflow: visible;
     /*
 	background-image: linear-gradient(transparent 50%, rgba(69, 142, 209, 0.04) 50%);
 	background-size: 3em 3em;
 	background-origin: content-box;
+    box-shadow: -1px 0px 0px 0px #358ccb, 0px 0px 0px 1px #dfdfdf;
     */
-	overflow: visible;
 }
 
 pre.prettyprint code {
     max-height: inherit;
 	height: 100%;
-	padding: 0 1em;
 	display: block;
-	overflow: auto;
+	/*
+    overflow: auto;
+    padding: 0 1em;
+    */
 }
 
 pre.prettyprint::before,
@@ -78,6 +79,19 @@ pre.prettyprint::after {
 	transform: rotate(2deg);
 }
 
-ol.linenums{margin-top:0;margin-bottom:0}
-li.L0,li.L1,li.L2,li.L3,li.L5,li.L6,li.L7,li.L8{list-style-type:none}
-li.L1,li.L3,li.L5,li.L7,li.L9{background:#eee}
+ol.linenums {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 32px;
+}
+
+pre.prettyprint.linenums:not([mock-linenums]) li {
+    list-style-type: decimal;
+}
+
+pre.prettyprint.linenums[mock-linenums] li {
+    list-style-type: none;
+}
+
+
+/*li.L1,li.L3,li.L5,li.L7,li.L9{background:#eee}*/

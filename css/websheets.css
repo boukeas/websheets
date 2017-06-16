@@ -168,18 +168,56 @@ div.nav-buttons:after {
     code (additional to prettify.css)
 */
 
-pre > code a {
+pre.prettyprint {
+    overflow: hidden;
+}
+
+pre code {
+    position: relative;
+}
+
+pre code a {
     cursor: default;
 }
 
-code a::after {
+pre code ins, pre code del {
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+pre code ins {
+    background-color: rgb(76, 224, 142);
+}
+
+pre code del {
+    background-color: rgb(224, 142, 76);
+}
+
+pre code ins::before, pre code del::before {
+    position: absolute;
+    left: -24px;
+    top: 4px;
+}
+
+pre code ins::before {
+    content: url(icons/plus.svg);
+}
+
+pre code del::before {
+    content: url(icons/minus.svg);
+}
+
+
+pre > code a::after {
     content: url('icons/cursor.svg');
     margin-left: 6px;
     margin-top: 3px;
     position: absolute;
 }
 
-code a[highlighted] {
+pre > code a[highlighted] {
     text-decoration: underline dotted;
 }
 
