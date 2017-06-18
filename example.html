@@ -18,7 +18,7 @@
 <div class='step'>
     <p> Πληκτρολογήστε την εντολή:</p>
     <pre class='prettyprint'>
-        <code class='language-python'>
+        <code class='language-python' no-indent>
             print("Καλημέρα.")
         </code>
     </pre>
@@ -36,19 +36,20 @@
         <p> Όπως και στο προηγούμενο βήμα, θα χρησιμοποιήσουμε και πάλι την
             εντολή <code>print</code> για να εμφανίσουμε ένα μήνυμα στην
             οθόνη. Το μήνυμα θα πρέπει να περικλείεται σε εισαγωγικά.</p>
-        <pre class='prettyprint'><code class='language-python'>print("Η Απάντηση είναι... 42")</code></pre>
+        <pre class='prettyprint'><code class='language-python' no-indent>
+            print("Η Απάντηση είναι... 42")
+        </code></pre>
     </div>
-
 </div>
 
 <div class='step'>
     <p> Προσθέστε πριν την <code>print</code> του προηγούμενου βήματος την εντολή:</p>
     <pre class='prettyprint'>
-        <code class='language-python'>
-# μια γραμμή με σχόλια
-<del>print("Καλημέρα.")</del>
-<ins>answer = 42</ins>
-#κι άλλη μια, για το καλό
+        <code class='language-python' indent=4>
+            # μια γραμμή με σχόλια
+            <del>print("Καλημέρα.")</del>
+            <ins>answer = 42</ins>
+            # κι άλλη μια, για το καλό
         </code>
     </pre>
     <p> Η answer είναι μια μεταβλητή στην οποία δίνουμε την τιμή 42. Tώρα
@@ -57,10 +58,10 @@
     <p> Τροποποιήστε την print του βήματος 2 ως εξής:</p>
     <pre class='prettyprint'>
         <code class='language-python'>
-print("Η Απάντηση είναι..." , answer )
-if (answer == 'George'):
-    print('Hello boss, what's cooking?')
-    cooking = input()
+            print("Η Απάντηση είναι..." , answer )
+            if (answer == 'George'):
+                print('Hello boss, what's cooking?')
+                cooking = input()
         </code>
     </pre>
 
@@ -96,11 +97,11 @@ if (answer == 'George'):
 <div class='step'>
     <p> Στην αρχή του προγράμματος προσθέστε τις παρακάτω εντολές:</p>
     <pre class='prettyprint'>
-        <code class='language-python'>
-# έξοδος
-<a>print("Πώς σε λένε;")</a>
-# είσοδος
-name = <a>input()</a>
+        <code class='language-python' indent=4>
+            # έξοδος
+            <a>print("Πώς σε λένε;")</a>
+            # είσοδος
+            name = <a>input()</a>
         </code>
     </pre>
     <aside>Ένα σχόλιο για την <code>print</code>.</aside>
@@ -181,8 +182,10 @@ name = <a>input()</a>
 </section>
 
 <script src="js/websheets.js"></script>
-<!--<script src="js/run_prettify.js"></script>-->
 <script src="js/run_prettify.js"></script>
+<!--
+<script src="js/run_prettify.js"></script>
+-->
 
 </body>
 </html>

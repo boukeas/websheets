@@ -436,36 +436,59 @@ let node, code;
 //
 let blocks = document.querySelectorAll('pre.prettyprint');
 for (let block of blocks) {
-    //
+    // force linenums (even if just for correct rendering)
     if (!block.classList.contains('linenums')) {
         block.classList.add('linenums');
         block.setAttribute('mock-linenums', '');
     }
-    //
-    console.log('pre: before');
-    console.log(block.childNodes);
+
+    // remove whitespace between <pre> and <code> tags -> allows indenting
     if (block.firstChild.nodeType == 3 && is_all_ws(block.firstChild))
         block.removeChild(block.firstChild);
     if (block.lastChild.nodeType == 3 && is_all_ws(block.lastChild))
         block.removeChild(block.lastChild);
-    console.log('pre: after');
-    console.log(block.childNodes);
+
     //
     let segment = block.querySelector('code');
-    console.log('code: before');
-    console.log(segment.childNodes);
-    if (segment.firstChild.nodeType == 3)
-        segment.firstChild.textContent = segment.firstChild.textContent.trimLeft();
+    // remove trailing whitespace between actual code and the </code> tag
     if (segment.lastChild.nodeType == 3)
         segment.lastChild.textContent = segment.lastChild.textContent.trimRight();
+    //
+    if (segment.firstChild.nodeType == 3) {
+        //console.log('first line of code: before');
+        //console.log('<', segment.firstChild.textContent, ">", );
+        // remove leading whitespace, up to the first linebreak
+        let linebreak = segment.firstChild.textContent.indexOf('\n');
+        if (!linebreak || is_all_ws(segment.firstChild.textContent.substring(0, linebreak)))
+            segment.firstChild.textContent = segment.firstChild.textContent.substring(linebreak+1);
+        // check if current indent needs to be preserved or replaced with user preference
+        if (segment.hasAttribute('no-indent')) {
+            segment.removeAttribute('no-indent');
+            segment.setAttribute('indent', 0);
+        }
+        if (segment.hasAttribute('indent')) {
+            let indent = segment.getAttribute('indent');
+            // compute indent of first line, as a reference
+            // https://stackoverflow.com/questions/25823914/javascript-count-spaces-before-first-character-of-a-string
+            const firstLineIndent = segment.firstChild.textContent.search(/[\S\uFEFF\xA0]/);
+            const replaced = ' '.repeat(firstLineIndent);
+            const replacement = ' '.repeat(indent);
+            let headingFilter = RegExp('^' + replaced, 'gm');
+            //let trailingFilter = RegExp('\n', 'g');
+            for (let node of segment.childNodes) {
+                if (node.nodeType == 3) {
+                    node.textContent = node.textContent.replace(headingFilter, replacement);
+                    //node.textContent = node.textContent.replace(trailingFilter, "%%%");
+                } else {
+
+                }
+            }
+        }
+    }
 
     console.log('code: after');
     console.log(segment.childNodes);
     console.log('----');
-
-
-    //if (code.firstChild.nodeType == 3) block.removeChild(block.firstChild.firstChild);
-    //if (block.lastChild.firstChild.nodeType == 3) block.removeChild(block.firstChild.lastChild);
 }
 
 //// onload

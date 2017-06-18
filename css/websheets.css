@@ -172,40 +172,21 @@ pre.prettyprint {
     overflow: hidden;
 }
 
-pre.prettyprint code {
-    position: relative;
-}
-
-pre.prettyprint code a {
-    cursor: default;
-}
-
-/*
-pre.prettyprint code a[highlighted] {
-    text-decoration: underline dotted;
-}
-*/
-
-pre.prettyprint code a {
-    text-decoration: underline dotted;
-}
-
 pre.prettyprint li[highlighted] {
     background-color: rgb(232, 255, 255);
 }
 
-/*
-pre.prettyprint code a::before {
-    content: url('icons/cursor.svg');
-    margin-left: 6px;
-    margin-top: 3px;
-    position: absolute;
+pre code {
+    position: relative;
 }
-*/
+
+pre code a {
+    cursor: default;
+    text-decoration: underline dotted;
+}
 
 pre code ins, pre code del {
     text-decoration: none;
-    position: relative;
     display: inline-block;
     width: 100%;
 }
@@ -218,10 +199,14 @@ pre code del {
     background-color: rgb(224, 142, 76);
 }
 
-pre code ins::before, pre code del::before, pre code a::before {
+pre code a::before, pre code ins::before, pre code del::before  {
     position: absolute;
     left: -24px;
     top: 4px;
+}
+
+pre code a::before {
+    content: url(icons/cursor.svg);
 }
 
 pre code ins::before {
@@ -230,10 +215,6 @@ pre code ins::before {
 
 pre code del::before {
     content: url(icons/minus.svg);
-}
-
-pre code a::before {
-    content: url(icons/cursor.svg);
 }
 
 div.code-container, div.sidenote-container {
