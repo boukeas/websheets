@@ -422,12 +422,50 @@ function handleQuestions() {
 
 //// run this part **before** run_prettify.js
 
+String.prototype.trimLeft = function () {
+    // adapted from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trim
+    return this.replace(/^[\s\uFEFF\xA0]+/g, '');
+};
+
+String.prototype.trimRight = function () {
+    // adapted from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trim
+    return this.replace(/[\s\uFEFF\xA0]+$/g, '');
+  };
+
+let node, code;
+//
 let blocks = document.querySelectorAll('pre.prettyprint');
 for (let block of blocks) {
+    //
     if (!block.classList.contains('linenums')) {
         block.classList.add('linenums');
         block.setAttribute('mock-linenums', '');
     }
+    //
+    console.log('pre: before');
+    console.log(block.childNodes);
+    if (block.firstChild.nodeType == 3 && is_all_ws(block.firstChild))
+        block.removeChild(block.firstChild);
+    if (block.lastChild.nodeType == 3 && is_all_ws(block.lastChild))
+        block.removeChild(block.lastChild);
+    console.log('pre: after');
+    console.log(block.childNodes);
+    //
+    let segment = block.querySelector('code');
+    console.log('code: before');
+    console.log(segment.childNodes);
+    if (segment.firstChild.nodeType == 3)
+        segment.firstChild.textContent = segment.firstChild.textContent.trimLeft();
+    if (segment.lastChild.nodeType == 3)
+        segment.lastChild.textContent = segment.lastChild.textContent.trimRight();
+
+    console.log('code: after');
+    console.log(segment.childNodes);
+    console.log('----');
+
+
+    //if (code.firstChild.nodeType == 3) block.removeChild(block.firstChild.firstChild);
+    //if (block.lastChild.firstChild.nodeType == 3) block.removeChild(block.firstChild.lastChild);
 }
 
 //// onload

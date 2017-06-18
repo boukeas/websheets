@@ -22,7 +22,7 @@
 .atn{color:#404}
 .atv{color:#060}}
 
-code, pre.prettyprint {
+pre.prettyprint, code {
 	font-family: 'Ubuntu Mono', monospace;
 	text-align: left;
 	white-space: pre;
@@ -31,6 +31,13 @@ code, pre.prettyprint {
 	word-wrap: normal;
 	line-height: 1.5;
 }
+
+/* this results in a warning, can't figure it out
+*:not(pre.prettyprint) code {
+    background-color: rgb(222, 222, 222);
+    padding: 2px 4px 0px 4px;
+}
+*/
 
 pre.prettyprint {
 	position: relative;
@@ -50,11 +57,11 @@ pre.prettyprint {
 
 pre.prettyprint code {
     max-height: inherit;
-	height: 100%;
-	display: block;
 	/*
+    display: block;
     overflow: auto;
     padding: 0 1em;
+    height: 100%;
     */
 }
 
