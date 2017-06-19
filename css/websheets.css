@@ -213,7 +213,9 @@ pre code a {
 pre li.del::before, pre li.ins::before, pre li.mark::before, pre code a::before {
     position: absolute;
     left: -24px;
-    top: 2px;
+    /* http://zerosixthree.se/vertical-align-anything-with-just-3-lines-of-css/ */
+    top: 50%;
+    transform: translateY(-9px);
 }
 
 pre li.ins::before {
