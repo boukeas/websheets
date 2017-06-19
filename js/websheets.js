@@ -539,4 +539,6 @@ document.body.onload = function() {
         del.ancestor('pre li').classList.add('del');
     for (let ins of document.querySelectorAll('pre ins'))
         ins.ancestor('pre li').classList.add('ins');
+    for (let mark of document.querySelectorAll('pre mark'))
+        mark.ancestor('pre li').classList.add('mark');
 }

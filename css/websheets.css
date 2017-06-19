@@ -188,8 +188,9 @@ pre code, pre li {
     position: relative;
 }
 
-pre code del, pre code ins {
+pre code del, pre code ins, pre code mark {
     text-decoration: none;
+    background: none;
 }
 
 pre li.del {
@@ -200,12 +201,16 @@ pre li.ins {
     background-color: rgb(76, 224, 142);
 }
 
+pre li.mark {
+    background-color: rgb(224, 224, 76);
+}
+
 pre code a {
     cursor: default;
     text-decoration: underline dotted;
 }
 
-pre li.del::before, pre li.ins::before, pre code a::before {
+pre li.del::before, pre li.ins::before, pre li.mark::before, pre code a::before {
     position: absolute;
     left: -24px;
     top: 2px;
@@ -217,6 +222,10 @@ pre li.ins::before {
 
 pre li.del::before {
     content: url(icons/minus.svg);
+}
+
+pre li.mark::before {
+    content: url(icons/gps.svg);
 }
 
 pre code a::before {
