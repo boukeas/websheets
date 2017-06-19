@@ -239,7 +239,7 @@ function handleSectioning() {
     }
 }
 
-function handleNavigation() {
+function handleNavigation(visibleSection) {
     // Adds a 'nav-button' div to the end of each section.
     // Each 'nav-button' div contains a 'prev-button' and a 'next-button'.
 
@@ -301,9 +301,12 @@ function handleNavigation() {
     }
 
     // show only first section
-    showSingle(sections, 0);
+    if (!visibleSection || visibleSection < 1 || visibleSection > sections.length) {
+        visibleSection = 1;
+        console.warn('invalid section, defaulting to', visibleSection);
+    }
+    showSingle(sections, visibleSection-1);
 }
-
 
 //// functions for code explanations
 
@@ -432,26 +435,6 @@ String.prototype.trimRight = function () {
     return this.replace(/[\s\uFEFF\xA0]+$/g, '');
   };
 
-/*
-function ancestor(node, match) {
-    // https://www.sitepoint.com/finding-an-ancestor-node/
-    if (!node) return null;
-    else if (!node.nodeType || typeof(match) != 'string') return node;
-
-    if ((match = match.split('.')).length === 1) match.push(null);
-    else if (!match[0]) match[0] = null;
-
-    do {
-        if ((!match[0] ||
-             match[0].toLowerCase() == node.nodeName.toLowerCase()) &&
-            (!match[1] ||
-             new RegExp('( |^)(' + match[1] + ')( |$)').test(node.className)))
-             break;
-    } while (node = node.parentNode);
-    return node;
-}
-*/
-
 Node.prototype.ancestor = function(selector) {
     node = this;
     while (node && !node.matches(selector)) node = node.parentNode;
@@ -511,14 +494,79 @@ for (let block of blocks) {
     // console.log('----');
 }
 
+function getUrlParams(url) {
+    // https://developer.mozilla.org/en-US/docs/Web/API/Window/location
+    // https://www.sitepoint.com/get-url-parameters-with-javascript/
+
+  // get query string from url (optional) or window
+  var queryString = url ? url.split('?')[1] : window.location.search.slice(1);
+
+  // we'll store the parameters here
+  var obj = {};
+
+  // if query string exists
+  if (queryString) {
+
+    // stuff after # is not part of query string, so get rid of it
+    queryString = queryString.split('#')[0];
+
+    // split our query string into its component parts
+    var arr = queryString.split('&');
+
+    for (var i=0; i<arr.length; i++) {
+      // separate the keys and the values
+      var a = arr[i].split('=');
+
+      // in case params look like: list[]=thing1&list[]=thing2
+      var paramNum = undefined;
+      var paramName = a[0].replace(/\[\d*\]/, function(v) {
+        paramNum = v.slice(1,-1);
+        return '';
+      });
+
+      // set parameter value (use 'true' if empty)
+      var paramValue = typeof(a[1])==='undefined' ? true : a[1];
+
+      // (optional) keep case consistent
+      paramName = paramName.toLowerCase();
+      paramValue = paramValue.toLowerCase();
+
+      // if parameter name already exists
+      if (obj[paramName]) {
+        // convert value to array (if still string)
+        if (typeof obj[paramName] === 'string') {
+          obj[paramName] = [obj[paramName]];
+        }
+        // if no array index number specified...
+        if (typeof paramNum === 'undefined') {
+          // put the value on the end of the array
+          obj[paramName].push(paramValue);
+        }
+        // if array index number specified...
+        else {
+          // put the value at that index number
+          obj[paramName][paramNum] = paramValue;
+        }
+      }
+      // if param name doesn't exist yet, set it
+      else {
+        obj[paramName] = paramValue;
+      }
+    }
+  }
+
+  return obj;
+}
+
 //// onload
 
 document.body.onload = function() {
+    let params = getUrlParams();
     // add auto-numbered collapsible headings before each step
     handleSteps();
     // add section headers and navigation buttons
     handleSectioning();
-    handleNavigation();     // check if navigation button handling should change
+    handleNavigation(params.section);
     // create buttons for all hints
     handleGroup(':not(.hint)', '.hint', 'hint');
     addGroupButtons('hint', 'Υπόδειξη');
