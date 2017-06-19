@@ -265,7 +265,7 @@ function handleNavigation() {
         prev.onclick = function() {
             // hides the current section and reveals the previous one
             // assumes the current section is two levels up the button
-            section = this.parentNode.parentNode;
+            section = this.ancestor('section');
             hide(section);
             show(section.prev);
             window.scrollBy(0, section.prev.getBoundingClientRect().top);
@@ -285,7 +285,7 @@ function handleNavigation() {
         next.onclick = function() {
             // hides the current section and reveals the next one
             // assumes the current section is two levels up the button
-            section = this.parentNode.parentNode;
+            section = this.ancestor('section');
             hide(section);
             show(section.next);
             window.scrollBy(0, section.next.getBoundingClientRect().top);
@@ -308,27 +308,27 @@ function handleNavigation() {
 //// functions for code explanations
 
 function highlightExplanation() {
-    this.setAttribute('highlighted', "");
-    // go up two levels, from the <a> to <code> to <li>
-    this.linked.parentNode.parentNode.setAttribute('highlighted', "");
+    this.classList.add('explained');
+    // go up from the <a> to <code> to <li>
+    this.linked.ancestor('li').classList.add('explained');
 }
 
 function unhighlightExplanation() {
-    this.removeAttribute('highlighted');
-    // go up two levels, from the <a> to <code> to <li>
-    this.linked.parentNode.parentNode.removeAttribute('highlighted');
+    this.classList.remove('explained');
+    // go up from the <a> to <code> to <li>
+    this.linked.ancestor('li').classList.remove('explained');
 }
 
 function highlightSegment() {
     // go up two levels, from the <a> to <code> to <li>
-    this.parentNode.parentNode.setAttribute('highlighted', "");
-    this.linked.setAttribute('highlighted', "");
+    this.ancestor('li').classList.add('explained');
+    this.linked.classList.add('explained');
 }
 
 function unhighlightSegment() {
     // go up two levels, from the <a> to <code> to <li>
-    this.parentNode.parentNode.removeAttribute('highlighted');
-    this.linked.removeAttribute('highlighted');
+    this.ancestor('li').classList.remove('explained');
+    this.linked.classList.remove('explained');
 }
 
 
@@ -432,6 +432,32 @@ String.prototype.trimRight = function () {
     return this.replace(/[\s\uFEFF\xA0]+$/g, '');
   };
 
+/*
+function ancestor(node, match) {
+    // https://www.sitepoint.com/finding-an-ancestor-node/
+    if (!node) return null;
+    else if (!node.nodeType || typeof(match) != 'string') return node;
+
+    if ((match = match.split('.')).length === 1) match.push(null);
+    else if (!match[0]) match[0] = null;
+
+    do {
+        if ((!match[0] ||
+             match[0].toLowerCase() == node.nodeName.toLowerCase()) &&
+            (!match[1] ||
+             new RegExp('( |^)(' + match[1] + ')( |$)').test(node.className)))
+             break;
+    } while (node = node.parentNode);
+    return node;
+}
+*/
+
+Node.prototype.ancestor = function(selector) {
+    node = this;
+    while (node && !node.matches(selector)) node = node.parentNode;
+    return node;
+}
+
 let node, code;
 //
 let blocks = document.querySelectorAll('pre.prettyprint');
@@ -455,40 +481,34 @@ for (let block of blocks) {
         segment.lastChild.textContent = segment.lastChild.textContent.trimRight();
     //
     if (segment.firstChild.nodeType == 3) {
-        //console.log('first line of code: before');
-        //console.log('<', segment.firstChild.textContent, ">", );
         // remove leading whitespace, up to the first linebreak
         let linebreak = segment.firstChild.textContent.indexOf('\n');
         if (!linebreak || is_all_ws(segment.firstChild.textContent.substring(0, linebreak)))
             segment.firstChild.textContent = segment.firstChild.textContent.substring(linebreak+1);
-        // check if current indent needs to be preserved or replaced with user preference
+        // replace no-indent shorthand for indent=0
         if (segment.hasAttribute('no-indent')) {
             segment.removeAttribute('no-indent');
             segment.setAttribute('indent', 0);
         }
+        // check if current indent needs to be preserved or replaced with user preference
         if (segment.hasAttribute('indent')) {
             let indent = segment.getAttribute('indent');
             // compute indent of first line, as a reference
             // https://stackoverflow.com/questions/25823914/javascript-count-spaces-before-first-character-of-a-string
             const firstLineIndent = segment.firstChild.textContent.search(/[\S\uFEFF\xA0]/);
+            // replace leading indent with indent specified by user
             const replaced = ' '.repeat(firstLineIndent);
             const replacement = ' '.repeat(indent);
             let headingFilter = RegExp('^' + replaced, 'gm');
-            //let trailingFilter = RegExp('\n', 'g');
-            for (let node of segment.childNodes) {
-                if (node.nodeType == 3) {
+            for (let node of segment.childNodes)
+                if (node.nodeType == 3)
                     node.textContent = node.textContent.replace(headingFilter, replacement);
-                    //node.textContent = node.textContent.replace(trailingFilter, "%%%");
-                } else {
-
-                }
-            }
         }
     }
 
-    console.log('code: after');
-    console.log(segment.childNodes);
-    console.log('----');
+    // console.log('code: after');
+    // console.log(segment.childNodes);
+    // console.log('----');
 }
 
 //// onload
@@ -514,4 +534,9 @@ document.body.onload = function() {
     //
     handleGroup('p', 'aside', 'sidenote');
     handleSidenotes();
+    //
+    for (let del of document.querySelectorAll('pre del'))
+        del.ancestor('pre li').classList.add('del');
+    for (let ins of document.querySelectorAll('pre ins'))
+        ins.ancestor('pre li').classList.add('ins');
 }

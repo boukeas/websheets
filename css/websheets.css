@@ -172,12 +172,32 @@ pre.prettyprint {
     overflow: hidden;
 }
 
-pre.prettyprint li[highlighted] {
+pre.linenums:not([mock-linenums]) li {
+    list-style-type: decimal;
+}
+
+pre.linenums[mock-linenums] li {
+    list-style-type: none;
+}
+
+pre li.explained {
     background-color: rgb(232, 255, 255);
 }
 
-pre code {
+pre code, pre li {
     position: relative;
+}
+
+pre code del, pre code ins {
+    text-decoration: none;
+}
+
+pre li.del {
+    background-color: rgb(224, 142, 76);
+}
+
+pre li.ins {
+    background-color: rgb(76, 224, 142);
 }
 
 pre code a {
@@ -185,6 +205,26 @@ pre code a {
     text-decoration: underline dotted;
 }
 
+pre li.del::before, pre li.ins::before, pre code a::before {
+    position: absolute;
+    left: -24px;
+    top: 2px;
+}
+
+pre li.ins::before {
+    content: url(icons/plus.svg);
+}
+
+pre li.del::before {
+    content: url(icons/minus.svg);
+}
+
+pre code a::before {
+    content: url(icons/cursor.svg);
+}
+
+
+/*
 pre code ins, pre code del {
     text-decoration: none;
     display: inline-block;
@@ -216,6 +256,7 @@ pre code ins::before {
 pre code del::before {
     content: url(icons/minus.svg);
 }
+*/
 
 div.code-container, div.sidenote-container {
     position: relative;
@@ -237,7 +278,7 @@ div.sidenote-group aside {
     font-weight: 300;
 }
 
-div.sidenote-group aside[highlighted] {
+div.sidenote-group aside.explained {
     background-color: rgb(232, 255, 255);
 }
 
