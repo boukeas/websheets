@@ -68,10 +68,15 @@ div.section-heading h2 {
     step numbering
 */
 
+section > div.step {
+    position: relative;
+}
+
 div.step-heading {
     position: relative;
     padding: 1em 0 1em 0;
     border-bottom: 2px solid rgb(0, 120, 128);
+    cursor: pointer;
 }
 
 div.step-heading h3 {
@@ -80,6 +85,7 @@ div.step-heading h3 {
     font-size: 125%;
     font-weight: 400;
     color: rgb(0, 120, 128);
+    cursor: inherit;
 }
 
 div.step-heading button {
@@ -91,19 +97,34 @@ div.step-heading button {
     border: none;
     background-color: transparent;
     margin-top: 0.5em;
+    cursor: inherit;
 }
 
-div.step-heading button[expanded] {
+div.step-heading.expanded button {
     background-image: url('icons/down.svg');
+}
+
+div.step-heading.expanded + div.step {
+    display: block;
+}
+
+div.step-heading:not(.expanded) button {
+    background-image: url('icons/right.svg');
+}
+
+div.step-heading:not(.expanded) + div.step {
+    display: none;
+}
+
+/*
+div.step-heading button[expanded] {
+
 }
 
 div.step-heading button:not([expanded]) {
     background-image: url('icons/right.svg');
 }
-
-section > div.step {
-    position: relative;
-}
+*/
 
 
 /*

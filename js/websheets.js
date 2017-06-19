@@ -165,16 +165,28 @@ function toggleAttribute(element, attribute) {
 
 //// function for automatic step handling
 
-function ECStepButtonHandler() {
-    if (this.hasAttribute('expanded')) {
-        // step is now expanded, so collapse it
-        hide(this.parentNode.nextSibling);
-        this.removeAttribute('expanded');
-    } else {
-        // step is now collapsed, so expand it
-        show(this.parentNode.nextSibling);
-        this.setAttribute('expanded', '');
+function expandAllSteps() {
+    for (let step of document.querySelectorAll('div.step-heading:not(.expanded)'))
+        step.classList.add('expanded');
+}
+
+function expandStep(stepIndex) {
+    if (stepIndex < 1) {
+        console.warn('invalid step index: must be greater than 0');
+        return;
     }
+    let steps = document.querySelectorAll('div.step-heading');
+    stepIndex--;
+    if (stepIndex >= steps.length) {
+        console.warn('invalid step index: must be less than', steps.length);
+        return;
+    }
+    steps[stepIndex].classList.add('expanded');
+}
+
+function collapseAllSteps() {
+    for (let step of document.querySelectorAll('div.step-heading.expanded'))
+        step.classList.remove('expanded');
 }
 
 function handleSteps() {
@@ -197,8 +209,12 @@ function handleSteps() {
         // make an expand/collapse button
         button = document.createElement('button');
         button.className = 'expand-button';
-        button.setAttribute('expanded', '');
-        button.onclick = ECStepButtonHandler;
+        headingDiv.onclick = function() {
+            if (this.classList.contains('expanded'))
+                this.classList.remove('expanded');
+            else
+                this.classList.add('expanded');
+        }
         // placement
         headingDiv.appendChild(heading);
         headingDiv.appendChild(button);
@@ -301,7 +317,9 @@ function handleNavigation(visibleSection) {
     }
 
     // show only first section
-    if (!visibleSection || visibleSection < 1 || visibleSection > sections.length) {
+    if (!visibleSection)
+        visibleSection = 1;
+    else if (visibleSection < 1 || visibleSection > sections.length) {
         visibleSection = 1;
         console.warn('invalid section, defaulting to', visibleSection);
     }
@@ -564,6 +582,10 @@ document.body.onload = function() {
     let params = getUrlParams();
     // add auto-numbered collapsible headings before each step
     handleSteps();
+    if (params.expanded == undefined)
+        expandAllSteps();
+    else if (params.expanded)
+        expandStep(params.expanded);
     // add section headers and navigation buttons
     handleSectioning();
     handleNavigation(params.section);
