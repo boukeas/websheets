@@ -8,7 +8,7 @@ function hide(element) {
 }
 
 function hideAll(elements) {
-    // hide all elements in the list
+    // hide all elements
     for (let element of elements) hide(element);
 }
 
@@ -18,7 +18,7 @@ function show(element, display='block') {
 }
 
 function showSingle(elements, index, display='block') {
-    // show only a single element in the list, specified by index
+    // show only a single element, specified by index
     hideAll(elements);
     show(elements[index], display);
 }
@@ -26,12 +26,29 @@ function showSingle(elements, index, display='block') {
 
 //// functions for locating and grouping elements
 
-function nextSelectedSibling(element, selector) {
-    while ((element = node_after(element)))
-        if (element.matches(selector)) return element; else return null;
-    return null;
+/**
+ * Retrieves a Node's next sibling, provided that it matches a selector.
+ * It ignores intermediate text nodes comprising entirely of whitespace.
+ *
+ * @param selector  The selector that the retrieved sibling should match.
+ *
+ * @return          The next sibling, if it matches the selector, or
+ *                  null otherwise.
+ */
+Node.prototype.nextSelectedSibling = function(selector) {
+    let element = node_after(this);
+    if (element && element.matches(selector)) return element; else return null;
 }
 
+/**
+ *
+ *
+ * @param current   X
+ * @param selector  X
+ * @param name      X
+ *
+ * @return          X
+ */
 function groupSelected(current, selector, name) {
     let next;
     // create a container div for the group
@@ -43,12 +60,49 @@ function groupSelected(current, selector, name) {
     while (current) {
         // find next element before appending current one
         // otherwise the sibling 'connection' between them is lost
-        next = nextSelectedSibling(current, selector);
+        next = current.nextSelectedSibling(selector);
         container.appendChild(current);
         current = next;
     }
     return container;
 }
+
+/**
+ *
+ *
+ * @param current   X
+ * @param selector  X
+ * @param name      X
+ *
+ * @return          X
+ */
+function handleGroup(preselector, selector, groupName, containerName=groupName) {
+    // Groups successive selected elements into a group div.
+    // Optionally places the group div inside a container div.
+
+    let group, container;
+    // find the first element for each group of elements
+    let firsts = document.querySelectorAll(preselector + ' + ' + selector);
+    if (containerName) {
+        for (let first of firsts) {
+            // move all sibling elements into a group div
+            group = groupSelected(first, selector, groupName + '-group');
+            // create a container to hold the group
+            container = document.createElement('div');
+            container.className = containerName + '-container';
+            group.parentNode.insertBefore(container, group);
+            container.appendChild(group);
+        }
+    } else {
+        for (let first of firsts) {
+            // move all sibling elements into a group div
+            groupSelected(first, selector, groupName + '-group');
+        }
+    }
+}
+
+
+////
 
 function addGroupButtons(name, buttonTxt) {
     let group, button, buttons, buttonCounter;
@@ -100,67 +154,7 @@ function addGroupButtons(name, buttonTxt) {
     }
 }
 
-function handleGroup(preselector, selector, groupName, containerName=groupName) {
-    // Groups successive selected elements into a group div.
-    // Optionally places the group div inside a container div.
 
-    let group, container;
-    // find the first element for each group of elements
-    let firsts = document.querySelectorAll(preselector + ' + ' + selector);
-    if (containerName) {
-        for (let first of firsts) {
-            // move all sibling elements into a group div
-            group = groupSelected(first, selector, groupName + '-group');
-            // create a container to hold the group
-            container = document.createElement('div');
-            container.className = containerName + '-container';
-            group.parentNode.insertBefore(container, group);
-            container.appendChild(group);
-        }
-    } else {
-        for (let first of firsts) {
-            // move all sibling elements into a group div
-            groupSelected(first, selector, groupName + '-group');
-        }
-    }
-}
-
-
-//// functions to assist li numbering and navigation
-
-function enumerate(elements, start=1) {
-    // adds an explicit numerical "value" attribute to the elements
-    let value = start;
-    for (let element of elements) {
-        element.value = value;
-        element.setAttribute('value', value);
-        value++;
-    }
-}
-
-function link(elements) {
-    // adds a prev and next attribute to all elements, thus linking them
-    // assumes elements.length > 1
-    elements[0].prev = null;
-    elements[0].next = elements[1];
-    for (let index=1; index < elements.length-1; index++) {
-        elements[index].prev = elements[index-1];
-        elements[index].next = elements[index+1];
-    }
-    elements[elements.length-1].prev = elements[elements.length-2];
-    elements[elements.length-1].next = null;
-}
-
-/*
-//// generally useful function...
-
-function toggleAttribute(element, attribute) {
-    if (element.hasAttribute(attribute))
-        element.removeAttribute(attribute);
-    else
-        element.setAttribute(attribute, "");
-}
-*/
 
 
 //// function for automatic step handling
@@ -235,7 +229,7 @@ function handleSectioning() {
     let sectionIndex = 1;
     for (let section of document.querySelectorAll('section')) {
         // retrieve the section's heading
-        heading = nextSelectedSibling(section.firstChild, 'h2');
+        heading = section.firstChild.nextSelectedSibling('h2');
         // creating the 'section-heading' div and insert it
         headingDiv = document.createElement('div');
         headingDiv.className = 'section-heading';
@@ -253,6 +247,19 @@ function handleSectioning() {
         }
         sectionIndex++;
     }
+}
+
+function link(elements) {
+    // adds a prev and next attribute to all elements, thus linking them
+    // assumes elements.length > 1
+    elements[0].prev = null;
+    elements[0].next = elements[1];
+    for (let index=1; index < elements.length-1; index++) {
+        elements[index].prev = elements[index-1];
+        elements[index].next = elements[index+1];
+    }
+    elements[elements.length-1].prev = elements[elements.length-2];
+    elements[elements.length-1].next = null;
 }
 
 function handleNavigation(visibleSection) {
@@ -280,7 +287,6 @@ function handleNavigation(visibleSection) {
         // click event
         prev.onclick = function() {
             // hides the current section and reveals the previous one
-            // assumes the current section is two levels up the button
             section = this.ancestor('section');
             hide(section);
             show(section.prev);
