@@ -293,7 +293,7 @@ div.code-container, div.sidenote-container {
 }
 
 /* displays explanations as sidenotes */
-div.sidenote-group {
+body.marginnotes div.sidenote-group {
     position: absolute;
     left: 100%;
     top: 0px;

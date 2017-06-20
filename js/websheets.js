@@ -547,7 +547,7 @@ function getUrlParams(url) {
 
       // (optional) keep case consistent
       paramName = paramName.toLowerCase();
-      paramValue = paramValue.toLowerCase();
+      // paramValue = paramValue.toLowerCase();
 
       // if parameter name already exists
       if (obj[paramName]) {
@@ -604,6 +604,8 @@ document.body.onload = function() {
     //
     handleGroup('p', 'aside', 'sidenote');
     handleSidenotes();
+    //
+    if (params.marginnotes) document.body.classList.add('marginnotes');
     //
     for (let del of document.querySelectorAll('pre del'))
         del.ancestor('pre li').classList.add('del');
