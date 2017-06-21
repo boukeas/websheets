@@ -41,26 +41,29 @@ Node.prototype.nextSelectedSibling = function(selector) {
 }
 
 /**
+ * Starting from a specified first element, it locates and groups all its
+ * consequtive sibling elements that match a selector into a group div.
  *
+ * @param first     The element from which the grouping begins.
+ * @param selector  The selector that all consequtive sibling elements should
+ *                  match.
+ * @param name      The name of the group div that holds the selected elements.
  *
- * @param current   X
- * @param selector  X
- * @param name      X
- *
- * @return          X
+ * @return          The new group div, that has already been inserted into the
+ *                  DOM, in the place of the original group of elements.
  */
-function groupSelected(current, selector, name) {
-    let next;
-    // create a container div for the group
+function groupSelected(first, selector, name) {
+    // create a div to hold the elements of the group
     let container = document.createElement('div');
     container.className = name;
-    // placement
-    current.parentNode.insertBefore(container, current);
-    // find sibling elements and move them in the container div
+    // placement of the group div right before the first element
+    first.parentNode.insertBefore(container, first);
+    // find consecutive selected sibling elements and move them in the group div
+    let current = first;
     while (current) {
         // find next element before appending current one
         // otherwise the sibling 'connection' between them is lost
-        next = current.nextSelectedSibling(selector);
+        let next = current.nextSelectedSibling(selector);
         container.appendChild(current);
         current = next;
     }
@@ -70,11 +73,12 @@ function groupSelected(current, selector, name) {
 /**
  *
  *
- * @param current   X
- * @param selector  X
- * @param name      X
+ * @param preselector   X
+ * @param selector      X
+ * @param groupName     X
+ * @param containerName X
  *
- * @return          X
+ * @return              X
  */
 function handleGroup(preselector, selector, groupName, containerName=groupName) {
     // Groups successive selected elements into a group div.
@@ -101,8 +105,16 @@ function handleGroup(preselector, selector, groupName, containerName=groupName) 
     }
 }
 
-
-////
+/**
+ *
+ *
+ * @param preselector   X
+ * @param selector      X
+ * @param groupName     X
+ * @param containerName X
+ *
+ * @return              X
+ */
 
 function addGroupButtons(name, buttonTxt) {
     let group, button, buttons, buttonCounter;
@@ -110,10 +122,10 @@ function addGroupButtons(name, buttonTxt) {
     for (let container of containers) {
         // retrieve the group inside the container
         // the buttons will correspond to the children of this group
-        group = container.firstChild;
+        let group = container.firstChild;
         hideAll(group.childNodes);
         // create div for the buttons
-        buttons = document.createElement('div');
+        let buttons = document.createElement('div');
         buttons.className = name + '-group-buttons';
         buttons.active = null;
         buttonCounter = 0;
@@ -155,27 +167,69 @@ function addGroupButtons(name, buttonTxt) {
 }
 
 
+////
+
+function enumerate(elements, start=0, attribute='index') {
+    // adds an enumeration attribute to a collection of elements
+    let value = start;
+    for (let element of elements) {
+        element.setAttribute(attribute, value);
+        value++;
+    }
+}
 
 
-//// function for automatic step handling
+//// functions for automatic step handling
+
+/**
+ * Toggles a Node's class membership. If the class is in the Node's classList,
+ * then it is removed and vice versa.
+ *
+ * @param cls  The name of the class that is toggled.
+ */
+Node.prototype.toggleClass = function(cls) {
+    if (this.classList.contains(cls))
+        this.classList.remove(cls);
+    else
+        this.classList.add(cls);
+}
+
+// this is an event-handler function that toggles the element's 'expanded'
+// class membership
+function toggleExpanded() {
+    this.toggleClass('expanded');
+}
+
+/**
+ * Prepends a 'step-heading' div to each 'div.step' element. Each 'step-heading'
+ * div contains an auto-numbered 'h3' for the step and an expand/collapse button
+ * for the step contents.
+ *
+ * When a 'step-heading' div is a member of the 'expanded' class, then the
+ * step is displayed, otherwise it is collapsed.
+ */
+function handleSteps(steps) {
+    for (let step of steps) {
+        // create the 'step-heading' div
+        let headingDiv = document.createElement('div');
+        headingDiv.className = 'step-heading';
+        headingDiv.onclick = toggleExpanded;
+        // make an auto-numbered h3 heading for the step
+        let heading = document.createElement('h3');
+        heading.innerHTML = 'Βήμα ' + step.getAttribute('counter');
+        // make an expand/collapse button
+        let button = document.createElement('button');
+        button.className = 'expand-button';
+        // placement of elements: h3 heading and button into the div
+        headingDiv.appendChild(heading);
+        headingDiv.appendChild(button);
+        step.parentNode.insertBefore(headingDiv, step);
+    }
+}
 
 function expandAllSteps() {
     for (let step of document.querySelectorAll('div.step-heading:not(.expanded)'))
         step.classList.add('expanded');
-}
-
-function expandStep(stepIndex) {
-    if (stepIndex < 1) {
-        console.warn('invalid step index: must be greater than 0');
-        return;
-    }
-    let steps = document.querySelectorAll('div.step-heading');
-    stepIndex--;
-    if (stepIndex >= steps.length) {
-        console.warn('invalid step index: must be less than', steps.length);
-        return;
-    }
-    steps[stepIndex].classList.add('expanded');
 }
 
 function collapseAllSteps() {
@@ -183,51 +237,17 @@ function collapseAllSteps() {
         step.classList.remove('expanded');
 }
 
-function handleSteps() {
-    // Prepends a 'step-heading' div to each 'div.step' element.
-    // Each 'step-heading' div contains an auto-numbered 'h3' and
-    // an expand/collapse button for the step contents.
-
-    //
-    let headingDiv, heading, button;
-    // retrieve all steps
-    let steps = document.querySelectorAll('div.step');
-    let stepindex = 1;
-    for (let step of steps) {
-        // create the 'step-heading' div
-        headingDiv = document.createElement('div');
-        headingDiv.className = 'step-heading';
-        // make an auto-numbered h3 heading for the step
-        heading = document.createElement('h3');
-        heading.innerHTML = 'Βήμα ' + stepindex;
-        // make an expand/collapse button
-        button = document.createElement('button');
-        button.className = 'expand-button';
-        headingDiv.onclick = function() {
-            if (this.classList.contains('expanded'))
-                this.classList.remove('expanded');
-            else
-                this.classList.add('expanded');
-        }
-        // placement
-        headingDiv.appendChild(heading);
-        headingDiv.appendChild(button);
-        step.parentNode.insertBefore(headingDiv, step);
-        stepindex++;
-    }
-}
 
 
 //// functions to create and handle navigation buttons for sections
 
-function handleSectioning() {
+function handleSectioning(sections) {
     // Inserts a 'section-heading' div at the beginning of each section.
     // Each 'section-heading' div contains the section title (drawn from the
     // 'h2' section heading, if it exists) and an auto-numbered 'h4' sub-title
 
     let heading, headingDiv, subheading;
-    let sectionIndex = 1;
-    for (let section of document.querySelectorAll('section')) {
+    for (let section of sections) {
         // retrieve the section's heading
         heading = section.firstChild.nextSelectedSibling('h2');
         // creating the 'section-heading' div and insert it
@@ -236,7 +256,7 @@ function handleSectioning() {
         section.insertBefore(headingDiv, section.firstChild);
         // create the subheading with the section's number and insert it
         subheading = document.createElement(heading ? 'h4' : 'h2');
-        subheading.innerHTML = 'Ενότητα ' + sectionIndex;
+        subheading.innerHTML = 'Ενότητα ' + section.getAttribute('counter');
         headingDiv.appendChild(subheading);
         // now insert the section heading into the div, if it exists
         if (heading) {
@@ -245,7 +265,6 @@ function handleSectioning() {
         } else {
             section.title = subheading.textContent;
         }
-        sectionIndex++;
     }
 }
 
@@ -262,13 +281,11 @@ function link(elements) {
     elements[elements.length-1].next = null;
 }
 
-function handleNavigation(visibleSection) {
+function handleNavigation(sections) {
     // Adds a 'nav-button' div to the end of each section.
     // Each 'nav-button' div contains a 'prev-button' and a 'next-button'.
 
     let buttons, prev, next;
-    // retrieve all sections
-    let sections = document.querySelectorAll('section');
     link(sections);
     let sectionIndex = 0;
     for (let section of sections) {
@@ -321,15 +338,51 @@ function handleNavigation(visibleSection) {
         // add the 'nav-buttons' div to the current section
         section.appendChild(buttons);
     }
+}
 
-    // show only first section
-    if (!visibleSection)
-        visibleSection = 1;
-    else if (visibleSection < 1 || visibleSection > sections.length) {
-        visibleSection = 1;
-        console.warn('invalid section, defaulting to', visibleSection);
+////
+
+function handleVisible(steps, sections, params) {
+    // determine visible elements: two things to do here:
+    // 1. expand a single step, if provided in query string
+    // 2. display a single section
+    let step, sectionCounter;
+
+    if (params.step == undefined) {
+        // no step in query string: expand all steps
+        expandAllSteps();
+    } else if (params.step < 0 || params.step > steps.length) {
+        // illegal step in query string: expand all steps and issue warning
+        expandAllSteps();
+        console.warn('invalid step parameter in query string, all steps expanded');
+    } else if (params.step > 0) {
+        // legal step in query string: expand step and compute section index
+        step = steps[params.step - 1];
+        step.previousSibling.classList.add('expanded');
+        sectionCounter = step.ancestor('section').getAttribute('counter');
     }
-    showSingle(sections, visibleSection-1);
+
+    if (sectionCounter == undefined) {
+        if (params.section == undefined) {
+            // no section in query string: default to 1
+            sectionCounter = 1;
+        } else if (params.section < 1 || params.section > sections.length) {
+            // illegal section in query string: default to 1 and issue warning
+            sectionCounter = 1;
+            console.warn('invalid section parameter in query string');
+        } else {
+            sectionCounter = params.section;
+        }
+    } else {
+        if (params.section != undefined) {
+            // when both a section and a step is provided, ignore the section
+            console.warn('ingoring section parameter in query string');
+        }
+    }
+
+    // display a single section
+    showSingle(sections, sectionCounter - 1);
+
 }
 
 //// functions for code explanations
@@ -585,16 +638,24 @@ function getUrlParams(url) {
 //// onload
 
 document.body.onload = function() {
-    let params = getUrlParams();
+    // retrieve all steps
+    let steps = document.querySelectorAll('div.step');
+    // enumerate steps
+    enumerate(steps, 1, 'counter');
     // add auto-numbered collapsible headings before each step
-    handleSteps();
-    if (params.expanded == undefined)
-        expandAllSteps();
-    else if (params.expanded)
-        expandStep(params.expanded);
-    // add section headers and navigation buttons
-    handleSectioning();
-    handleNavigation(params.section);
+    handleSteps(steps);
+    // retrieve all sections
+    let sections = document.querySelectorAll('section');
+    // enumerate sections
+    enumerate(sections, 1, 'counter');
+    // add section headers
+    handleSectioning(sections);
+    // determine section and step visibility
+    let params = getUrlParams();
+    handleVisible(steps, sections, params);
+    // add navigation buttons
+    handleNavigation(sections);
+
     // create buttons for all hints
     handleGroup(':not(.hint)', '.hint', 'hint');
     addGroupButtons('hint', 'Υπόδειξη');
