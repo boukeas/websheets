@@ -650,6 +650,8 @@ function handleQuestions() {
  * Run this part **before** run_prettify.js
  */
 
+document.body.hide();
+
 let blocks = document.querySelectorAll('pre.prettyprint');
 for (let block of blocks) {
     // force linenums (for correct rendering)
@@ -742,4 +744,5 @@ document.body.onload = function() {
         ins.ancestor('pre li').classList.add('ins');
     for (let mark of document.querySelectorAll('pre mark'))
         mark.ancestor('pre li').classList.add('mark');
+    document.body.show();
 }
