@@ -49,7 +49,7 @@ Node.prototype.nextSelectedSibling = function(selector) {
  *                  null if none exists.
  */
 Node.prototype.ancestor = function(selector) {
-    node = this;
+    let node = this;
     while (node && !node.matches(selector)) node = node.parentNode;
     return node;
 }
@@ -641,52 +641,32 @@ function handleQuestions() {
     }
 }
 
+/**
+ * Pre-processing of code blocks:
+ *      - forces linenums
+ *      - removes whitespace in <pre> and <code> segments (to allow indentation)
+ *      - uses the 'indent' attribute of code blocks to enforce min indentation
+ *
+ * Run this part **before** run_prettify.js
+ */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//// run this part **before** run_prettify.js
-
-let node, code;
-//
 let blocks = document.querySelectorAll('pre.prettyprint');
 for (let block of blocks) {
-    // force linenums (even if just for correct rendering)
+    // force linenums (for correct rendering)
     if (!block.classList.contains('linenums')) {
         block.classList.add('linenums');
         block.setAttribute('mock-linenums', '');
     }
-
     // remove whitespace between <pre> and <code> tags -> allows indenting
     if (block.firstChild.nodeType == 3 && is_all_ws(block.firstChild))
         block.removeChild(block.firstChild);
     if (block.lastChild.nodeType == 3 && is_all_ws(block.lastChild))
         block.removeChild(block.lastChild);
-
-    //
+    // handle whitespace within code tags
     let segment = block.querySelector('code');
     // remove trailing whitespace between actual code and the </code> tag
     if (segment.lastChild.nodeType == 3)
         segment.lastChild.textContent = segment.lastChild.textContent.trimRight();
-    //
     if (segment.firstChild.nodeType == 3) {
         // remove leading whitespace, up to the first linebreak
         let linebreak = segment.firstChild.textContent.indexOf('\n');
@@ -707,15 +687,12 @@ for (let block of blocks) {
             const replaced = ' '.repeat(firstLineIndent);
             const replacement = ' '.repeat(indent);
             let headingFilter = RegExp('^' + replaced, 'gm');
-            for (let node of segment.childNodes)
+            for (let node of segment.childNodes) {
                 if (node.nodeType == 3)
                     node.textContent = node.textContent.replace(headingFilter, replacement);
+            }
         }
     }
-
-    // console.log('code: after');
-    // console.log(segment.childNodes);
-    // console.log('----');
 }
 
 
