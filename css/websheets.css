@@ -402,11 +402,11 @@ div.question label {
     position:relative;
 }
 
-div.question label[highlighted]:not([correct]) {
+div.question label.highlighted:not([correct]) {
     background-color: rgb(255, 192, 192);
 }
 
-div.question label[highlighted][correct] {
+div.question label.highlighted[correct] {
     background-color: rgb(192, 255, 192);
 }
 
