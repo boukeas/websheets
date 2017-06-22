@@ -641,6 +641,17 @@ function handleQuestions() {
     }
 }
 
+////// misc functions
+
+function handleFooter() {
+    // place footer within a container
+    let container = document.createElement('div');
+    container.className = 'footer-container';
+    let footer = document.querySelector('footer');
+    footer.parentNode.insertBefore(container, footer);
+    container.appendChild(footer);
+}
+
 /**
  * Pre-processing of code blocks:
  *      - forces linenums
@@ -744,5 +755,8 @@ document.body.onload = function() {
         ins.ancestor('pre li').classList.add('ins');
     for (let mark of document.querySelectorAll('pre mark'))
         mark.ancestor('pre li').classList.add('mark');
+    // place footer in container (for formatting purposes)
+    handleFooter();
+    // ta-daaam!
     document.body.show();
 }
