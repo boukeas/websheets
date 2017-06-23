@@ -340,21 +340,38 @@ function handleVisible(steps, sections, params) {
 }
 
 
-////// navigation [PENDING CLEANUP]
+////// navigation
 
+//// event handlers for navigation buttons
+
+function prevClickHandler() {
+    // hides the current section and reveals the previous one
+    let section = this.ancestor('section');
+    section.hide();
+    section.prev.show();
+    window.scrollBy(0, section.prev.getBoundingClientRect().top);
+}
+
+function nextClickHandler() {
+    // hides the current section and reveals the next one
+    let section = this.ancestor('section');
+    section.hide();
+    section.next.show();
+    window.scrollBy(0, section.next.getBoundingClientRect().top);
+}
+
+
+/**
+ * Adds a 'nav' element to the end of each section, which contains the
+ * 'prev-' and 'next-button' that lead to the previous and next section
+ */
 function handleNavigation(sections) {
-    // Adds a 'nav-button' div to the end of each section.
-    // Each 'nav-button' div contains a 'prev-button' and a 'next-button'.
-
-    let buttons, prev, next;
     link(sections);
-    let sectionIndex = 0;
     for (let section of sections) {
-        // create a 'nav-buttons' container for the prev/next navigation buttons
-        buttons = document.createElement('div');
-        buttons.className = 'nav-buttons';
+        // create a 'nav' element for the prev/next navigation buttons
+        let buttons = document.createElement('nav');
         // create the "previous" button
-        prev = document.createElement('button');
+        let prev = document.createElement('button');
         prev.className = 'nav-button prev-button';
         if (section.prev) {
             prev.innerHTML = '<div>Προηγούμενη Ενότητα<br>' + section.prev.title + '</div>'
@@ -363,17 +380,9 @@ function handleNavigation(sections) {
             prev.disabled = true;
         }
         // click event
-        prev.onclick = function() {
-            // hides the current section and reveals the previous one
-            section = this.ancestor('section');
-            section.hide();
-            section.prev.show();
-            window.scrollBy(0, section.prev.getBoundingClientRect().top);
-        }
-        if (!section.prev) prev.disabled = true;
-
+        prev.onclick = prevClickHandler;
         // create the "next" button
-        next = document.createElement('button');
+        let next = document.createElement('button');
         next.className = 'nav-button next-button';
         if (section.next) {
             next.innerHTML = '<div>Επόμενη Ενότητα<br>' + section.next.title + '</div>'
@@ -382,21 +391,11 @@ function handleNavigation(sections) {
             next.disabled = true;
         }
         // click event
-        next.onclick = function() {
-            // hides the current section and reveals the next one
-            // assumes the current section is two levels up the button
-            section = this.ancestor('section');
-            section.hide();
-            section.next.show();
-            window.scrollBy(0, section.next.getBoundingClientRect().top);
-        }
-
+        next.onclick = nextClickHandler;
         // add buttons to the 'nav-buttons' div
         buttons.appendChild(prev);
         buttons.appendChild(next);
-        //buttons.appendChild(select);
-
-        // add the 'nav-buttons' div to the current section
+        // add the 'nav' element to the current section
         section.appendChild(buttons);
     }
 }

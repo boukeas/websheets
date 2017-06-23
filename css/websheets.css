@@ -165,11 +165,11 @@ div.step-heading button:not([expanded]) {
     navigation buttons
 */
 
-div.nav-buttons {
+nav {
     margin-top: 36px;
 }
 
-div.nav-buttons:after {
+nav:after {
     display: block;
     content: '.';
     visibility: hidden;
