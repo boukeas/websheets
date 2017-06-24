@@ -263,18 +263,21 @@ function handleSteps(steps) {
 ////// section handling
 
 /**
- * Inserts a 'section-heading' div at the beginning of each section.
+ * For each section, inserts a 'section-heading' div in the <header>.
  * Each 'section-heading' div contains the section title (drawn from the
  * 'h2' section heading, if it exists) and an auto-numbered 'h4' sub-title.
  */
 function handleSectioning(sections) {
+    let header = document.querySelector('header');
     for (let section of sections) {
         // retrieve the section's heading
         let heading = section.firstChild.nextSelectedSibling('h2');
-        // creating the 'section-heading' div and insert it
+        // create the 'section-heading' div and insert it in the <header>
         let headingDiv = document.createElement('div');
         headingDiv.className = 'section-heading';
-        section.insertBefore(headingDiv, section.firstChild);
+        header.appendChild(headingDiv);
+        // maintain a link between the section and its heading
+        section.heading = headingDiv;
         // create the subheading with the section's number and insert it
         let subheading = document.createElement(heading ? 'h4' : 'h2');
         subheading.innerHTML = 'Ενότητα ' + section.getAttribute('counter');
@@ -286,6 +289,9 @@ function handleSectioning(sections) {
         } else {
             section.title = subheading.textContent;
         }
+        // hide the section by default
+        section.hide();
+        section.heading.hide();
     }
 }
 
@@ -336,7 +342,9 @@ function handleVisible(steps, sections, params) {
     }
 
     // display a single section
-    showSingle(sections, sectionCounter - 1);
+    let visible = sections[sectionCounter - 1];
+    visible.show();
+    visible.heading.show();
 }
 
 
@@ -348,16 +356,20 @@ function prevClickHandler() {
     // hides the current section and reveals the previous one
     let section = this.ancestor('section');
     section.hide();
+    section.heading.hide();
     section.prev.show();
-    window.scrollBy(0, section.prev.getBoundingClientRect().top);
+    section.prev.heading.show();
+    window.scrollBy(0, section.prev.heading.getBoundingClientRect().top);
 }
 
 function nextClickHandler() {
     // hides the current section and reveals the next one
     let section = this.ancestor('section');
     section.hide();
+    section.heading.hide();
     section.next.show();
-    window.scrollBy(0, section.next.getBoundingClientRect().top);
+    section.next.heading.show();
+    window.scrollBy(0, section.next.heading.getBoundingClientRect().top);
 }
 
 
@@ -399,7 +411,6 @@ function handleNavigation(sections) {
         section.appendChild(buttons);
     }
 }
-
 
 ////// handle groups (such as explanations, questions and sidenotes)
 
