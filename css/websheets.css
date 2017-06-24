@@ -17,7 +17,7 @@ body {
 
 .footer-container {
     padding: 0;
-    margin: 0 0 12px 0;
+    margin: 0;
     background-color: rgb(64, 64, 64);
 }
 
@@ -193,40 +193,40 @@ nav:after {
 
 .prev-button {
     float: left;
-    padding: 6px 16px 6px 40px;
+    padding: 12px;
 }
 
 .next-button {
     float: right;
-    padding: 6px 40px 6px 16px;
+    padding: 12px;
 }
 
 .nav-button {
-    position: relative;
     font-family: 'Ubuntu Condensed', sans-serif;
     color: rgb(0, 128, 128);
-    border: 2px solid rgb(0, 128, 128);
-    border-radius: 20px;
-    background-color: rgb(255, 255, 255);
+    border: none;
+    background: none;
+    height: 32px;
+    display: flex;
+    align-items: center;
 }
 
 .next-button:after {
-    position: absolute;
-    top: 16px;
-    right: 12px;
-    content: url('icons/next.svg')
+    margin-left: 6px;
+    content: url('icons/next.svg');
+}
+
+.next-button:hover:not([disabled]):after {
+    content: url('icons/next-inverted.svg');
 }
 
 .prev-button:before {
-    position: absolute;
-    top: 16px;
-    left: 12px;
+    margin-right: 6px;
     content: url('icons/prev.svg')
 }
 
-.nav-button:hover:not([disabled]) {
-    color: rgb(255, 255, 255);
-    background-color: rgb(0, 128, 128);
+.next-button:hover:not([disabled]):before {
+    content: url('icons/prev-inverted.svg');
 }
 
 .nav-button:disabled {

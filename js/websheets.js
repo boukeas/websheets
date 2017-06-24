@@ -386,9 +386,8 @@ function handleNavigation(sections) {
         let prev = document.createElement('button');
         prev.className = 'nav-button prev-button';
         if (section.prev) {
-            prev.innerHTML = '<div>Προηγούμενη Ενότητα<br>' + section.prev.title + '</div>'
+            prev.innerHTML = section.prev.title
         } else {
-            prev.innerHTML = '<div>Προηγούμενη Ενότητα<br>&nbsp;</div>'
             prev.disabled = true;
         }
         // click event
@@ -397,9 +396,8 @@ function handleNavigation(sections) {
         let next = document.createElement('button');
         next.className = 'nav-button next-button';
         if (section.next) {
-            next.innerHTML = '<div>Επόμενη Ενότητα<br>' + section.next.title + '</div>'
+            next.innerHTML = section.next.title;
         } else {
-            next.innerHTML = '<div>Επόμενη Ενότητα<br>&nbsp;</div>'
             next.disabled = true;
         }
         // click event
