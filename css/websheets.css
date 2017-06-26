@@ -7,7 +7,6 @@ body {
     font-family: 'Ubuntu', sans-serif;
     font-weight: 400;
     font-size: 12pt;
-    box-sizing: border-box;
 }
 
 .header-container {
@@ -191,6 +190,14 @@ nav:after {
     clear: both;
 }
 
+.nav-button {
+    font-family: 'Ubuntu Condensed', sans-serif;
+    color: rgb(0, 128, 128);
+    border: none;
+    background: none;
+    height: 48px;
+}
+
 .prev-button {
     float: left;
     padding: 12px;
@@ -201,31 +208,23 @@ nav:after {
     padding: 12px;
 }
 
-.nav-button {
-    font-family: 'Ubuntu Condensed', sans-serif;
-    color: rgb(0, 128, 128);
-    border: none;
-    background: none;
-    height: 32px;
-    display: flex;
-    align-items: center;
+.next-button:after {
+    margin-left: 8px;
+    content: url('icons/next.svg');
+    vertical-align: -40%;
 }
 
-.next-button:after {
-    margin-left: 6px;
-    content: url('icons/next.svg');
+.prev-button:before {
+    margin-right: 8px;
+    content: url('icons/prev.svg');
+    vertical-align: -40%;
 }
 
 .next-button:hover:not([disabled]):after {
     content: url('icons/next-inverted.svg');
 }
 
-.prev-button:before {
-    margin-right: 6px;
-    content: url('icons/prev.svg')
-}
-
-.next-button:hover:not([disabled]):before {
+.prev-button:hover:not([disabled]):before {
     content: url('icons/prev-inverted.svg');
 }
 
