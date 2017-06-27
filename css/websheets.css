@@ -237,9 +237,11 @@ nav:after {
     code (additional to prettify.css)
 */
 
+/* don't remember why I put this here, but it messes with the box's shadow...
 pre.prettyprint {
     overflow: hidden;
 }
+*/
 
 pre.linenums:not([mock-linenums]) li {
     list-style-type: decimal;
