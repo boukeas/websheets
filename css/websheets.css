@@ -7,6 +7,7 @@ body {
     font-family: 'Ubuntu', sans-serif;
     font-weight: 400;
     font-size: 12pt;
+    text-align: justify;
 }
 
 .header-container {
@@ -412,6 +413,19 @@ div.sidenote-group aside.explained {
     left: 50%;
     margin-left: -20px;
     content: url(icons/point.svg);
+}
+
+summary {
+    font-family: 'Ubuntu Condensed', sans-serif;
+    color: rgb(0, 164, 128);
+}
+
+details {
+    padding: 12px;
+}
+
+details[open] {
+
 }
 
 /*

@@ -275,7 +275,7 @@ function handleSteps(steps) {
  * the <h1> is appended to its children.
  *
  * All sections are grouped into a 'page' div.
- * 
+ *
  * For each section, a 'section-heading' div is then inserted in the <header>.
  * Each 'section-heading' div contains the section title (drawn from the
  * 'h2' section heading, if it exists) and an auto-numbered 'h4' sub-title.
@@ -768,6 +768,9 @@ document.body.onload = function() {
     handleVisible(steps, sections, params);
     // add navigation buttons
     handleNavigation(sections);
+    // group concept explanations and add buttons for revealing them
+    handleGroup(':not(.concepts)', '.concepts', 'concept');
+    addGroupButtons('concept', 'Έννοιες');
     // group hints and add buttons for revealing them
     handleGroup(':not(.hint)', '.hint', 'hint');
     addGroupButtons('hint', 'Υπόδειξη');
