@@ -263,12 +263,41 @@ function handleSteps(steps) {
 ////// section handling
 
 /**
- * For each section, inserts a 'section-heading' div in the <header>.
+ * Replaces the document's <h1> with the following structure:
+ *
+ * <div class='header-container'>
+ *     <header>
+ *         <h1>...</h1>
+ *     </header>
+ * </div>
+ *
+ * The <h1> MUST exist. The <header> is created, if it does not exist, otherwise
+ * the <h1> is appended to its children.
+ *
+ * All sections are grouped into a 'page' div.
+ * 
+ * For each section, a 'section-heading' div is then inserted in the <header>.
  * Each 'section-heading' div contains the section title (drawn from the
  * 'h2' section heading, if it exists) and an auto-numbered 'h4' sub-title.
  */
 function handleSectioning(sections) {
+    // retrieve h1
+    let heading1 = document.querySelector('h1');
+    // retrieve or create header
     let header = document.querySelector('header');
+    if (!header) header = document.createElement('header');
+    // create the container and place the header in it
+    let headerContainer = document.createElement('div');
+    headerContainer.className = 'header-container';
+    headerContainer.appendChild(header);
+    // place the container in h1's place
+    heading1.parentNode.insertBefore(headerContainer, heading1);
+    header.appendChild(heading1);
+    // create the 'page' div (to hold the sections)
+    let page = document.createElement('div');
+    page.className = 'page';
+    sections[0].parentNode.insertBefore(page, sections[0]);
+    // for each section
     for (let section of sections) {
         // retrieve the section's heading
         let heading = section.firstChild.nextSelectedSibling('h2');
@@ -292,6 +321,8 @@ function handleSectioning(sections) {
         // hide the section by default
         section.hide();
         section.heading.hide();
+        // append the section to the page
+        page.appendChild(section);
     }
 }
 
