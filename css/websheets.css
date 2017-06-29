@@ -13,6 +13,19 @@ body {
 .header-container {
     margin: 0 0 12px 0;
     background-color: rgb(64, 64, 64);
+    z-index: 100;
+}
+
+.header-container.fixed {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    border-bottom: 8px solid rgb(255, 255, 255);
+}
+
+.header-container.fixed + div.page {
+    /* this depends on the height of the header-container */
+    margin-top: 150px;
 }
 
 .footer-container {
@@ -25,18 +38,15 @@ body {
 div.section-heading {
     color: rgb(255, 255, 255);
     padding-top: 12px;
-    padding-bottom: 12px;
 }
 
 header h1 {
     font-family: 'Ubuntu Condensed', sans-serif;
     color: rgb(255, 255, 255);
-    padding-top: 12px;
-    padding-bottom: 12px;
+    padding-bottom: 6px;
     border-bottom: 1px solid white;
     margin: 0;
 }
-
 
 div.section-heading h2, div.section-heading h4 {
     margin: 0;
@@ -65,6 +75,7 @@ section > div.section-heading {
 
 footer {
     font-size: 11pt;
+    padding: 24px 24px 24px 120px;
 }
 
 footer a {
@@ -82,10 +93,13 @@ footer h3 + p {
 
 header, footer {
     color: rgb(222, 222, 222);
-    padding: 24px 24px 24px 120px;
     width: 60%;
     min-width: 500px;
     max-width: 800px;
+}
+
+header {
+    padding: 12px 0px 12px 120px;
 }
 
 div.page {
@@ -370,10 +384,14 @@ div.sidenote-group aside.explained {
     hints
 */
 
+.hint {
+    /* probably necessary for the shadow below the code segments */
+    z-index: -2;
+}
+
 .hint, .question, .concepts {
     position: relative;
     padding: 1pt 12pt 1pt 12pt;
-    z-index: -2;
 }
 
 .hint, .hint-button:hover {

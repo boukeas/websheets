@@ -288,7 +288,8 @@ function handleSectioning(sections) {
     if (!header) header = document.createElement('header');
     // create the container and place the header in it
     let headerContainer = document.createElement('div');
-    headerContainer.className = 'header-container';
+    headerContainer.className = 'header-container fixed';
+    // headerContainer.className = 'header-container';
     headerContainer.appendChild(header);
     // place the container in h1's place
     heading1.parentNode.insertBefore(headerContainer, heading1);
@@ -390,7 +391,8 @@ function prevClickHandler() {
     section.heading.hide();
     section.prev.show();
     section.prev.heading.show();
-    window.scrollBy(0, section.prev.heading.getBoundingClientRect().top);
+    // window.scrollBy(0, section.prev.heading.getBoundingClientRect().top);
+    window.scrollTo(0,0);
 }
 
 function nextClickHandler() {
@@ -400,7 +402,7 @@ function nextClickHandler() {
     section.heading.hide();
     section.next.show();
     section.next.heading.show();
-    window.scrollBy(0, section.next.heading.getBoundingClientRect().top);
+    window.scrollTo(0,0);
 }
 
 
