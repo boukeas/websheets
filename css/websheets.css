@@ -384,9 +384,33 @@ div.sidenote-group aside.explained {
     hints
 */
 
-.hint {
-    /* probably necessary for the shadow below the code segments */
-    z-index: -2;
+.group-button {
+    position: relative;
+    font-family: 'Ubuntu Condensed', sans-serif;
+    border: none;
+    border-bottom: 4px solid transparent;
+    padding: 6px 18px 6px 18px;
+    margin: 12px 8px 12px 0px;
+    box-sizing: content-box;
+    border-radius: 5px;
+    /*
+    color: rgb(0, 164, 128);
+    border-bottom: 1px solid rgb(0, 164, 128);
+    background-color: rgb(255, 255, 255);
+    */
+    filter: grayscale(50%);
+    filter: opacity(50%);
+}
+
+.group-button:hover {
+    filter: grayscale(0%);
+    filter: opacity(100);
+}
+
+.group-button.active {
+    border-bottom: 4px solid orange;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 .hint, .question, .concepts {
@@ -394,33 +418,25 @@ div.sidenote-group aside.explained {
     padding: 1pt 12pt 1pt 12pt;
 }
 
-.hint, .hint-button:hover {
+.hint, .hint-button {
+    background-color: rgb(232, 255, 232);
+}
+
+.hint {
+    /* probably necessary for the shadow below the code segments */
+    z-index: -2;
+}
+
+.question, .question-button {
     background-color: rgb(255, 255, 232);
 }
 
-.question, .question-button:hover {
+.concepts, .concept-button {
     background-color: rgb(232, 255, 255);
 }
 
-.concepts, .concept-button:hover {
-    background-color: rgb(255, 232, 255);
-}
-
-.group-button {
-    position: relative;
-    font-family: 'Ubuntu Condensed', sans-serif;
-    color: rgb(0, 164, 128);
-    border: none;
-    border-bottom: 1px solid rgb(0, 164, 128);
-    background-color: rgb(255, 255, 255);
-    padding: 6px 18px 6px 18px;
-    margin: 12px 8px 12px 0px;
-    box-sizing: content-box;
-}
-
-.group-button.active {
-    color: rgb(255, 255, 255);
-    background-color: rgb(0, 164, 128);
+.concepts {
+    font-weight: 300;
 }
 
 /*
