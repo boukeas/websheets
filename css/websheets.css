@@ -529,15 +529,39 @@ div.question label aside:not([sidenote]) {
     font-weight: 300;
 }
 
+/* use this as a starting point,
+   if you want feedback buttons located on the side
+
+.feedback-button {
+    position: absolute;
+    right: 0px;
+    top: -6px;
+    font-family: 'Ubuntu Condensed', sans-serif;
+    color: rgb(0, 164, 128);
+    border: 1px dotted #000;
+    background: none;
+    padding: 6px 18px 6px 18px;
+    margin: 12px 8px 12px 0px;
+}
+
+.feedback-button:hover:not([disabled]), .feedback-button[active] {
+    display: block;
+}
+
+.feedback-button:disabled {
+    display: none;
+}
+*/
+
 .feedback-button {
     position: relative;
     font-family: 'Ubuntu Condensed', sans-serif;
     color: rgb(0, 164, 128);
     border: 2px solid rgb(0, 164, 128);
     border-radius: 20px;
-    background-color: rgb(255, 255, 255);
+    background: none;
     padding: 6px 18px 6px 18px;
-    margin: 12px 8px 12px 0px;
+    margin: 12px 8px 12px 32px;
 }
 
 .feedback-button:hover:not([disabled]), .feedback-button[active] {

@@ -631,7 +631,8 @@ function handleSidenotes() {
 
 function feedbackButtonClickHandler() {
     // retrieve selected answer and display its associated feedback
-    let selected = this.parentNode.querySelector('input:checked').parentNode;
+    let selected = this.ancestor('.question').querySelector('input:checked').parentNode;
+    console.log(selected);
     selected.classList.add('highlighted');
     if (selected.feedback) selected.feedback.show();
     // disable the feedback button
@@ -639,10 +640,12 @@ function feedbackButtonClickHandler() {
 }
 
 function answerChangeHandler() {
+    // enable feedback button (for buttons on the side, the answer's last child is the button)
+    // this.lastChild.disabled = false;
     // enable feedback button
-    this.button.disabled = false;
+    this.ancestor('.question').querySelector('.feedback-button').disabled = false;
     // de-highlight previously highlighted answer
-    let selected = this.parentNode.querySelector('label.highlighted');
+    let selected = this.ancestor('fieldset').querySelector('label.highlighted');
     if (selected) {
         selected.classList.remove('highlighted');
         // hide active feedback
@@ -662,6 +665,7 @@ function handleQuestions() {
     feedbackButton.innerHTML = 'Έλεγχος Απάντησης';
     feedbackButton.disabled = true;
     // onclick event handler
+    // following line: comment for feedback buttons on the side
     feedbackButton.onclick = feedbackButtonClickHandler;
     // retrieve all closed form questions with a single answer
     let questions = document.querySelectorAll("div.question-single");
@@ -682,17 +686,21 @@ function handleQuestions() {
             }
             // make sure the answer isn't checked
             answer.querySelector('input').checked = false;
-            // link segment to feedback and button (via object properties)
+            // link segment to feedback and button
             answer.feedback = answer.querySelector('aside');
             if (answer.feedback) answer.feedback.hide();
+            // following 2 lines: for feedback buttons on the side
+            // answer.appendChild(feedbackButton.cloneNode(true));
+            // answer.lastChild.onclick = feedbackButtonClickHandler;
             answer.button = feedbackButton;
             // onchange event handler
             answer.onchange = answerChangeHandler;
-            //
+            // move answer into fieldset
             fieldset.appendChild(answer);
         }
         //
         question.appendChild(fieldset);
+        // following line: comment for feedback buttons on the side
         question.appendChild(feedbackButton);
         questionCounter++;
     }
