@@ -656,20 +656,30 @@ function answerChangeHandler() {
  * mechanism.
  */
 function handleQuestions() {
+    // create a feedback button
+    let feedbackButton = document.createElement('button');
+    feedbackButton.className = 'feedback-button';
+    feedbackButton.innerHTML = 'Έλεγχος Απάντησης';
+    feedbackButton.disabled = true;
+    // onclick event handler
+    feedbackButton.onclick = feedbackButtonClickHandler;
     // retrieve all closed form questions with a single answer
     let questions = document.querySelectorAll("div.question-single");
+    let questionCounter = 1;
     for (let question of questions) {
-        // create a feedback button
-        let feedbackButton = document.createElement('button');
-        feedbackButton.className = 'feedback-button';
-        feedbackButton.innerHTML = 'Έλεγχος Απάντησης';
-        feedbackButton.disabled = true;
-        // onclick event handler
-        feedbackButton.onclick = feedbackButtonClickHandler;
-        question.appendChild(feedbackButton);
+        //
+        let fieldset = document.createElement('fieldset');
         // retrieve answers (labels) to the question
         let answers = question.querySelectorAll("label");
+        let answerCounter = 1;
         for (let answer of answers) {
+            // create radio button for answer, if not already present
+            if (first_child(answer).nodeType != 1 || first_child(answer).nodeName != 'INPUT') {
+                let radiobutton = document.createElement('input');
+                radiobutton.type = 'radio';
+                radiobutton.name = 'question-single-' + questionCounter;
+                answer.insertBefore(radiobutton, answer.firstChild);
+            }
             // make sure the answer isn't checked
             answer.querySelector('input').checked = false;
             // link segment to feedback and button (via object properties)
@@ -678,7 +688,13 @@ function handleQuestions() {
             answer.button = feedbackButton;
             // onchange event handler
             answer.onchange = answerChangeHandler;
+            //
+            fieldset.appendChild(answer);
         }
+        //
+        question.appendChild(fieldset);
+        question.appendChild(feedbackButton);
+        questionCounter++;
     }
 }
 
