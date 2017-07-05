@@ -632,7 +632,6 @@ function handleSidenotes() {
 function feedbackButtonClickHandler() {
     // retrieve selected answer and display its associated feedback
     let selected = this.ancestor('.question').querySelector('input:checked').parentNode;
-    console.log(selected);
     selected.classList.add('highlighted');
     if (selected.feedback) selected.feedback.show();
     // disable the feedback button
@@ -762,7 +761,6 @@ for (let block of blocks) {
             // https://stackoverflow.com/questions/25823914/javascript-count-spaces-before-first-character-of-a-string
             let firstLineIndent = segment.firstChild.textContent.search(/[\S\uFEFF\xA0]/);
             if (firstLineIndent < 0) firstLineIndent = segment.firstChild.textContent.length;
-            console.log('for segment:', "<" + segment.firstChild.textContent + ">", firstLineIndent);
             // replace leading indent with indent specified by user
             const replaced = ' '.repeat(firstLineIndent);
             const replacement = ' '.repeat(indent);
@@ -823,8 +821,12 @@ document.body.onload = function() {
         del.ancestor('pre li').classList.add('del');
     for (let ins of document.querySelectorAll('pre ins'))
         ins.ancestor('pre li').classList.add('ins');
-    for (let mark of document.querySelectorAll('pre mark'))
-        mark.ancestor('pre li').classList.add('mark');
+    for (let mark of document.querySelectorAll('pre mark')) {
+        let ancestor = mark.ancestor('pre li');
+        ancestor.classList.add('mark');
+        if (mark.classList.contains('inline'))
+            ancestor.classList.add('inline');
+    }
     // place footer in container (for formatting purposes)
     handleFooter();
     // ta-daaam!
