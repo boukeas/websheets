@@ -760,7 +760,9 @@ for (let block of blocks) {
             let indent = segment.getAttribute('indent');
             // compute indent of first line, as a reference
             // https://stackoverflow.com/questions/25823914/javascript-count-spaces-before-first-character-of-a-string
-            const firstLineIndent = segment.firstChild.textContent.search(/[\S\uFEFF\xA0]/);
+            let firstLineIndent = segment.firstChild.textContent.search(/[\S\uFEFF\xA0]/);
+            if (firstLineIndent < 0) firstLineIndent = segment.firstChild.textContent.length;
+            console.log('for segment:', "<" + segment.firstChild.textContent + ">", firstLineIndent);
             // replace leading indent with indent specified by user
             const replaced = ' '.repeat(firstLineIndent);
             const replacement = ' '.repeat(indent);
