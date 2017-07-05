@@ -659,19 +659,19 @@ function answerChangeHandler() {
  * mechanism.
  */
 function handleQuestions() {
-    // create a feedback button
-    let feedbackButton = document.createElement('button');
-    feedbackButton.className = 'feedback-button';
-    feedbackButton.innerHTML = 'Έλεγχος Απάντησης';
-    feedbackButton.disabled = true;
-    // onclick event handler
-    // following line: comment for feedback buttons on the side
-    feedbackButton.onclick = feedbackButtonClickHandler;
     // retrieve all closed form questions with a single answer
     let questions = document.querySelectorAll("div.question-single");
     let questionCounter = 1;
     for (let question of questions) {
-        //
+        // create a feedback button for the question
+        let feedbackButton = document.createElement('button');
+        feedbackButton.className = 'feedback-button';
+        feedbackButton.innerHTML = 'Έλεγχος Απάντησης';
+        feedbackButton.disabled = true;
+        // onclick event handler
+        // following line: comment for feedback buttons on the side
+        feedbackButton.onclick = feedbackButtonClickHandler;
+        // create a fieldset to place all answers in
         let fieldset = document.createElement('fieldset');
         // retrieve answers (labels) to the question
         let answers = question.querySelectorAll("label");
