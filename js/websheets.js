@@ -507,24 +507,31 @@ function groupButtonClickHandler() {
 ///////////////////
 
 let buttonMap = {
-    'concepts': function (button, buttonCounters) {
-        button.innerHTML = 'Έννοιες';
+    'concept': function(buttons, counters) {
+        // there should be only one concept button in the group
+        buttons.firstChild.innerHTML = 'Έννοιες';
     },
-    'hint': function (button, buttonCounters) {
-        if (buttonCounters['hint'] < 2)
-            button.innerHTML = 'Υπόδειξη';
-        else
-            button.innerHTML = 'Υπόδειξη ' + button.counter;
+
+    'question': function (buttons, counters) {
+        let stepNumber = buttons.ancestor('div.step').getAttribute('counter');
+        for (let button of buttons.childNodes)
+            button.innerHTML = 'Ερώτηση ' + stepNumber + '.' + button.counter;
     },
-    'hint solution': function (button, buttonCounters) {
-        if (buttonCounters['hint solution'] < 2)
-            button.innerHTML = 'Λύση';
-        else
-            button.innerHTML = 'Λύση ' + button.counter;
-    },
-    'question question-single': function (button, buttonCounters) {
-        let stepNumber = button.ancestor('div.step').getAttribute('counter');
-        button.innerHTML = 'Ερώτηση ' + stepNumber + '.' + button.counter;
+
+    'hint': function (buttons, counters) {
+        for (let button of buttons.childNodes) {
+            if (button.element.className == 'hint') {
+                if (counters['hint'] < 2)
+                    button.innerHTML = 'Υπόδειξη';
+                else
+                    button.innerHTML = 'Υπόδειξη ' + button.counter;
+            } else if (button.element.className == 'hint solution') {
+                if (counters['hint solution'] < 2)
+                    button.innerHTML = 'Λύση';
+                else
+                    button.innerHTML = 'Λύση ' + button.counter;
+            }
+        }
     }
 }
 
@@ -582,8 +589,7 @@ function addGroupButtons(name) {
         // place the buttons before the group
         container.insertBefore(buttons, container.firstChild);
         //
-        for (let button of buttons.childNodes)
-            buttonMap[button.element.className](button, buttonCounters);
+        buttonMap[name](buttons, buttonCounters);
     }
 }
 
