@@ -274,16 +274,16 @@ pre code, pre li {
     position: relative;
 }
 
-pre code del, pre code ins, pre code mark:not(.inline) {
+pre code del, pre code ins, pre code mark {
     text-decoration: none;
     background: none;
 }
 
-pre li.del {
+pre li.del:not(.inline), pre code del.inline {
     background-color: rgb(224, 142, 76);
 }
 
-pre li.ins {
+pre li.ins:not(.inline), pre code ins.inline {
     background-color: rgb(76, 224, 142);
 }
 

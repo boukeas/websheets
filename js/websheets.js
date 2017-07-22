@@ -819,8 +819,12 @@ document.body.onload = function() {
     // formatted (highlighted as complete lines) by the css
     for (let del of document.querySelectorAll('pre del'))
         del.ancestor('pre li').classList.add('del');
-    for (let ins of document.querySelectorAll('pre ins'))
-        ins.ancestor('pre li').classList.add('ins');
+    for (let ins of document.querySelectorAll('pre ins')) {
+        let ancestor = ins.ancestor('pre li');
+        ancestor.classList.add('ins');
+        if (ins.classList.contains('inline'))
+            ancestor.classList.add('inline');        
+    }
     for (let mark of document.querySelectorAll('pre mark')) {
         let ancestor = mark.ancestor('pre li');
         ancestor.classList.add('mark');
