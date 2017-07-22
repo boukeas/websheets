@@ -397,16 +397,16 @@ div.sidenote-group aside.explained {
     margin: 12px 8px 12px 0px;
     box-sizing: content-box;
     border-radius: 5px;
-    /*
-    color: rgb(0, 164, 128);
-    border-bottom: 1px solid rgb(0, 164, 128);
-    background-color: rgb(255, 255, 255);
-    */
     filter: grayscale(50%);
     filter: opacity(50%);
 }
 
-.group-button:hover {
+.group-button.active:hover {
+    filter: grayscale(50%);
+    filter: opacity(50%);
+}
+
+.group-button:not(.active):hover {
     filter: grayscale(0%);
     filter: opacity(100);
 }
@@ -415,6 +415,8 @@ div.sidenote-group aside.explained {
     border-bottom: 4px solid orange;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    filter: grayscale(0%);
+    filter: opacity(100);
 }
 
 .hint, .question, .concepts {
