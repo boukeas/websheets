@@ -504,6 +504,31 @@ function groupButtonClickHandler() {
     }
 }
 
+///////////////////
+
+let buttonMap = {
+    'concepts': function (button, buttonCounters) {
+        button.innerHTML = 'Έννοιες';
+    },
+    'hint': function (button, buttonCounters) {
+        if (buttonCounters['hint'] < 2)
+            button.innerHTML = 'Υπόδειξη';
+        else
+            button.innerHTML = 'Υπόδειξη ' + button.counter;
+    },
+    'hint solution': function (button, buttonCounters) {
+        if (buttonCounters['hint solution'] < 2)
+            button.innerHTML = 'Λύση';
+        else
+            button.innerHTML = 'Λύση ' + button.counter;
+    },
+    'question question-single': function (button, buttonCounters) {
+        let stepNumber = button.ancestor('div.step').getAttribute('counter');
+        button.innerHTML = 'Ερώτηση ' + stepNumber + '.' + button.counter;
+    }
+}
+
+
 /**
  * Locates group containers (such as those created by the handleGroup function)
  * and creates a group of buttons within the container, corresponding to the
@@ -524,7 +549,7 @@ function groupButtonClickHandler() {
                         name + '-container').
  * @param buttonTxt     The text to appear on the numbered buttons.
  */
-function addGroupButtons(name, buttonTxt) {
+function addGroupButtons(name) {
     let containers = document.querySelectorAll('.' + name + '-container');
     for (let container of containers) {
         // retrieve the group inside the container
@@ -535,7 +560,7 @@ function addGroupButtons(name, buttonTxt) {
         let buttons = document.createElement('div');
         buttons.className = name + '-group-buttons';
         buttons.active = null;
-        let buttonCounter = 0;
+        let buttonCounters = {};
         for (let element of group.childNodes) {
             // create button
             let button = document.createElement('button');
@@ -545,13 +570,20 @@ function addGroupButtons(name, buttonTxt) {
             button.element = element;
             element.button = button;
             // button content
-            buttonCounter++;
-            button.innerHTML = buttonTxt + ' ' + buttonCounter;
+            if (buttonCounters[element.className]) {
+                buttonCounters[element.className]++;
+            } else {
+                buttonCounters[element.className] = 1;
+            }
+            button.counter = buttonCounters[element.className];
             // click event
             button.onclick = groupButtonClickHandler;
         }
         // place the buttons before the group
         container.insertBefore(buttons, container.firstChild);
+        //
+        for (let button of buttons.childNodes)
+            buttonMap[button.element.className](button, buttonCounters);
     }
 }
 
@@ -796,13 +828,13 @@ document.body.onload = function() {
     handleNavigation(sections);
     // group concept explanations and add buttons for revealing them
     handleGroup(':not(.concepts)', '.concepts', 'concept');
-    addGroupButtons('concept', 'Έννοιες');
+    addGroupButtons('concept');
     // group hints and add buttons for revealing them
     handleGroup(':not(.hint)', '.hint', 'hint');
-    addGroupButtons('hint', 'Υπόδειξη');
+    addGroupButtons('hint');
     // special handling of solution-hints
     let solutions = document.querySelectorAll('.solution');
-    for (let solution of solutions) solution.button.innerHTML = 'Λύση';
+    // for (let solution of solutions) solution.button.innerHTML = 'Λύση';
     // group code explanations
     handleGroup('pre.prettyprint', 'aside', 'sidenote', 'code');
     handleExplanations();
@@ -813,7 +845,7 @@ document.body.onload = function() {
     if (params.marginnotes) document.body.classList.add('marginnotes');
     // group questions, add buttons for revealing them and install checking mechanism
     handleGroup(':not(.question)', '.question', 'question');
-    addGroupButtons('question', 'Ερώτηση');
+    addGroupButtons('question');
     handleQuestions();
     // add del, ins and mark classes to the code li's, so they are properly
     // formatted (highlighted as complete lines) by the css
@@ -823,7 +855,7 @@ document.body.onload = function() {
         let ancestor = ins.ancestor('pre li');
         ancestor.classList.add('ins');
         if (ins.classList.contains('inline'))
-            ancestor.classList.add('inline');        
+            ancestor.classList.add('inline');
     }
     for (let mark of document.querySelectorAll('pre mark')) {
         let ancestor = mark.ancestor('pre li');
