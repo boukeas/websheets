@@ -484,23 +484,29 @@ function handleGroup(preselector, selector, groupName, containerName=groupName) 
 
 //// event handler for group buttons
 
+function buttonDeactivate(btn) {
+    // deactivate button
+    btn.classList.remove('active');
+    btn.element.hide();
+    btn.parentNode.active = null;
+}
+
+function buttonActivate(btn) {
+    // check for other currently active element and deactivate
+    if (btn.parentNode.active) buttonDeactivate(btn.parentNode.active);
+    // activate button
+    btn.classList.add('active');
+    btn.element.show();
+    btn.parentNode.active = btn;
+}
+
 function groupButtonClickHandler() {
     if (this.classList.contains('active')) {
         // clicked on active element » deactivate
-        this.classList.remove('active');
-        this.element.hide();
-        this.parentNode.active = null;
+        buttonDeactivate(this);
     } else {
-        // check for other currently active element
-        if (this.parentNode.active) {
-            // deactivate active element
-            this.parentNode.active.classList.remove('active');
-            this.parentNode.active.element.hide();
-        }
         // clicked on inactive element » activate
-        this.classList.add('active');
-        this.element.show();
-        this.parentNode.active = this;
+        buttonActivate(this);
     }
 }
 
@@ -576,6 +582,10 @@ function addGroupButtons(name) {
             // link to element
             button.element = element;
             element.button = button;
+            if (element.classList.contains('active')) {
+                element.classList.remove('active');
+                buttonActivate(button);
+            }
             // button content
             if (buttonCounters[element.className]) {
                 buttonCounters[element.className]++;
