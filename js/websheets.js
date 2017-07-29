@@ -520,8 +520,11 @@ let buttonMap = {
 
     'question': function (buttons, counters) {
         let stepNumber = buttons.ancestor('div.step').getAttribute('counter');
-        for (let button of buttons.childNodes)
-            button.innerHTML = 'Ερώτηση ' + stepNumber + '.' + button.counter;
+        let questionNumber = 1;
+        for (let button of buttons.childNodes) {
+            button.innerHTML = 'Ερώτηση ' + stepNumber + '.' + questionNumber;
+            questionNumber++;
+        }
     },
 
     'hint': function (buttons, counters) {
@@ -677,28 +680,64 @@ function handleSidenotes() {
 
 // event handlers for questions
 
-function feedbackButtonClickHandler() {
-    // retrieve selected answer and display its associated feedback
-    let selected = this.ancestor('.question').querySelector('input:checked').parentNode;
-    selected.classList.add('highlighted');
-    if (selected.feedback) selected.feedback.show();
-    // disable the feedback button
-    this.disabled = true;
+function labelHighlight(label) {
+    label.classList.add('highlighted');
+    if (label.feedback) label.feedback.show();
 }
 
-function answerChangeHandler() {
+function labelDehighlight(label) {
+    label.classList.remove('highlighted');
+    if (label.feedback) label.feedback.hide();
+}
+
+function singleChangeHandler() {
     // enable feedback button (for buttons on the side, the answer's last child is the button)
     // this.lastChild.disabled = false;
     // enable feedback button
     this.ancestor('.question').querySelector('.feedback-button').disabled = false;
-    // de-highlight previously highlighted answer
-    let selected = this.ancestor('fieldset').querySelector('label.highlighted');
-    if (selected) {
-        selected.classList.remove('highlighted');
-        // hide active feedback
-        let feedback = selected.querySelector('aside');
-        if (feedback) feedback.hide();
+    // de-highlight previously highlighted answers
+    let answer = this.ancestor('fieldset').querySelector('label.highlighted');
+    if (answer) labelDehighlight(answer);
+}
+
+function singleFeedbackHandler() {
+    // retrieve selected answer and display its associated feedback
+    let answer = this.ancestor('.question').querySelector('label > input:checked').parentNode;
+    labelHighlight(answer);
+    // disable the feedback button
+    this.disabled = true;
+}
+
+function multipleChangeHandler() {
+    // enable feedback button (for buttons on the side, the answer's last child is the button)
+    // this.lastChild.disabled = false;
+    // enable feedback button
+    this.ancestor('.question').querySelector('.feedback-button').disabled = false;
+    // de-highlight single changed answer (because it has changed)
+    let answer = this;
+    labelDehighlight(answer);
+    /*
+    // de-highlight all answers (because one has changed)
+    let answers = this.ancestor('fieldset').querySelectorAll('label.highlighted');
+    for (let answer of answers) labelDehighlight(answer);
+    */
+}
+
+function multipleFeedbackHandler() {
+    // retrieve all answers and display their associated feedback
+    // depending on whether they are correctly checked or not
+    let answers = this.ancestor('.question').querySelectorAll('label');
+    for (let answer of answers) {
+        let input = answer.querySelector('input');
+        if ((input.checked && answer.hasAttribute('checkable')) ||
+            (!input.checked && !answer.hasAttribute('checkable')))
+            answer.setAttribute('correct', '');
+        else
+            answer.removeAttribute('correct');
+        labelHighlight(answer);
     }
+    // disable the feedback button
+    this.disabled = true;
 }
 
 /**
@@ -706,8 +745,8 @@ function answerChangeHandler() {
  * mechanism.
  */
 function handleQuestions() {
-    // retrieve all closed form questions with a single answer
-    let questions = document.querySelectorAll("div.question-single");
+    // retrieve all closed form questions
+    let questions = document.querySelectorAll("div.question");
     let questionCounter = 1;
     for (let question of questions) {
         // create a feedback button for the question
@@ -715,9 +754,25 @@ function handleQuestions() {
         feedbackButton.className = 'feedback-button';
         feedbackButton.innerHTML = 'Έλεγχος Απάντησης';
         feedbackButton.disabled = true;
-        // onclick event handler
-        // following line: comment for feedback buttons on the side
-        feedbackButton.onclick = feedbackButtonClickHandler;
+        // actions depending on the type of question (single or multiple choice)
+        let inputType, changeHandler;
+        if (question.classList.contains('question-single')) {
+            // determine type of input button: radio
+            inputType = 'radio';
+            // onclick event handler
+            // following line: comment for feedback buttons on the side
+            feedbackButton.onclick = singleFeedbackHandler;
+            // function to handle changes in answers
+            changeHandler = singleChangeHandler;
+        } else if (question.classList.contains('question-multiple')) {
+            // determine type of input button: checkbox
+            inputType = 'checkbox';
+            // onclick event handler
+            // following line: comment for feedback buttons on the side
+            feedbackButton.onclick = multipleFeedbackHandler;
+            // function to handle changes in answers
+            changeHandler = multipleChangeHandler;
+        }
         // create a fieldset to place all answers in
         let fieldset = document.createElement('fieldset');
         // retrieve answers (labels) to the question
@@ -727,8 +782,8 @@ function handleQuestions() {
             // create radio button for answer, if not already present
             if (first_child(answer).nodeType != 1 || first_child(answer).nodeName != 'INPUT') {
                 let radiobutton = document.createElement('input');
-                radiobutton.type = 'radio';
-                radiobutton.name = 'question-single-' + questionCounter;
+                radiobutton.name = 'question-' + questionCounter;
+                radiobutton.type = inputType;
                 answer.insertBefore(radiobutton, answer.firstChild);
             }
             // make sure the answer isn't checked
@@ -741,7 +796,7 @@ function handleQuestions() {
             // answer.lastChild.onclick = feedbackButtonClickHandler;
             answer.button = feedbackButton;
             // onchange event handler
-            answer.onchange = answerChangeHandler;
+            answer.onchange = changeHandler;
             // move answer into fieldset
             fieldset.appendChild(answer);
         }
