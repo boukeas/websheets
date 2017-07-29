@@ -753,7 +753,6 @@ function handleQuestions() {
         let feedbackButton = document.createElement('button');
         feedbackButton.className = 'feedback-button';
         feedbackButton.innerHTML = 'Έλεγχος Απάντησης';
-        feedbackButton.disabled = true;
         // actions depending on the type of question (single or multiple choice)
         let inputType, changeHandler;
         if (question.classList.contains('question-single')) {
@@ -764,6 +763,8 @@ function handleQuestions() {
             feedbackButton.onclick = singleFeedbackHandler;
             // function to handle changes in answers
             changeHandler = singleChangeHandler;
+            // disable feedback button (until an answer is selected)
+            feedbackButton.disabled = true;
         } else if (question.classList.contains('question-multiple')) {
             // determine type of input button: checkbox
             inputType = 'checkbox';
@@ -772,6 +773,8 @@ function handleQuestions() {
             feedbackButton.onclick = multipleFeedbackHandler;
             // function to handle changes in answers
             changeHandler = multipleChangeHandler;
+            // enable feedback button (because all answers might be uncheckable)
+            feedbackButton.disabled = false;
         }
         // create a fieldset to place all answers in
         let fieldset = document.createElement('fieldset');
