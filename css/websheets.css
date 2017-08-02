@@ -10,6 +10,29 @@ body {
     text-align: justify;
 }
 
+.note {
+    font-size: 11pt;
+}
+
+:focus {outline: none;}
+::-moz-focus-inner {border:0;}
+
+/*
+    header
+*/
+
+header {
+    padding: 12px 0px 12px 120px;
+}
+
+header h1 {
+    font-family: 'Ubuntu Condensed', sans-serif;
+    color: rgb(255, 255, 255);
+    padding-bottom: 6px;
+    border-bottom: 1px solid white;
+    margin: 0;
+}
+
 .header-container {
     margin: 0 0 12px 0;
     background-color: rgb(64, 64, 64);
@@ -28,50 +51,16 @@ body {
     margin-top: 150px;
 }
 
-.footer-container {
-    padding: 0;
-    margin: 0;
-    background-color: rgb(64, 64, 64);
-}
-
-
-div.section-heading {
-    color: rgb(255, 255, 255);
-    padding-top: 12px;
-}
-
-header h1 {
-    font-family: 'Ubuntu Condensed', sans-serif;
-    color: rgb(255, 255, 255);
-    padding-bottom: 6px;
-    border-bottom: 1px solid white;
-    margin: 0;
-}
-
-div.section-heading h2, div.section-heading h4 {
-    margin: 0;
-}
-
-div.section-heading h4 {
-    font-family: 'Ubuntu', sans-serif;
-    font-weight: 300;
-}
-
-div.section-heading h2 {
-    font-family: 'Ubuntu Condensed', sans-serif;
-    font-weight: 700;
+div.page {
+    padding-left: 120px;
+    width: 60%;
+    min-width: 500px;
+    max-width: 800px;
 }
 
 /*
-section > div.section-heading {
-    position: relative;
-    left: -5%;
-    padding: 5%;
-    width: 95%;
-    background-color: rgb(0, 120, 128);
-}
+    footer
 */
-
 
 footer {
     font-size: 11pt;
@@ -87,9 +76,19 @@ footer h3 + p {
     margin-top: -12pt;
 }
 
+.footer-container {
+    padding: 0;
+    margin: 0;
+    background-color: rgb(64, 64, 64);
+}
+
 #pythonies {
     border-bottom: 1px solid rgb(222, 222, 222);
 }
+
+/*
+    header & footer
+*/
 
 header, footer {
     color: rgb(222, 222, 222);
@@ -98,38 +97,28 @@ header, footer {
     max-width: 800px;
 }
 
-header {
-    padding: 12px 0px 12px 120px;
-}
-
-div.page {
-    padding-left: 120px;
-    width: 60%;
-    min-width: 500px;
-    max-width: 800px;
-}
-
-
 /*
-#repl {
-    position: fixed;
-    top: 10%;
-    left: 50%;
-    width: 50%;
-    border: 2px dashed #ff0000;
-    min-width: 500px;
-    height: 80%;
-    min-height: 500px;
-    margin-left: 32px;
-}
+    section headings
 */
 
-.note {
-    font-size: 11pt;
+div.section-heading {
+    color: rgb(255, 255, 255);
+    padding-top: 12px;
 }
 
-:focus {outline: none;}
-::-moz-focus-inner {border:0;}
+div.section-heading h2, div.section-heading h4 {
+    margin: 0;
+}
+
+div.section-heading h4 {
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 300;
+}
+
+div.section-heading h2 {
+    font-family: 'Ubuntu Condensed', sans-serif;
+    font-weight: 700;
+}
 
 /*
     step numbering
@@ -184,17 +173,6 @@ div.step-heading:not(.expanded) + div.step {
 }
 
 /*
-div.step-heading button[expanded] {
-
-}
-
-div.step-heading button:not([expanded]) {
-    background-image: url('icons/right.svg');
-}
-*/
-
-
-/*
     navigation buttons
 */
 
@@ -215,6 +193,11 @@ nav:after {
     border: none;
     background: none;
     height: 48px;
+}
+
+.nav-button:disabled {
+    filter: grayscale(100%);
+    filter: opacity(25%);
 }
 
 .prev-button {
@@ -245,11 +228,6 @@ nav:after {
 
 .prev-button:hover:not([disabled]):before {
     content: url('icons/prev-inverted.svg');
-}
-
-.nav-button:disabled {
-    filter: grayscale(100%);
-    filter: opacity(25%);
 }
 
 /*
@@ -324,41 +302,6 @@ pre code a::before {
     content: url(icons/cursor.svg);
 }
 
-
-/*
-pre code ins, pre code del {
-    text-decoration: none;
-    display: inline-block;
-    width: 100%;
-}
-
-pre code ins {
-    background-color: rgb(76, 224, 142);
-}
-
-pre code del {
-    background-color: rgb(224, 142, 76);
-}
-
-pre code a::before, pre code ins::before, pre code del::before  {
-    position: absolute;
-    left: -24px;
-    top: 4px;
-}
-
-pre code a::before {
-    content: url(icons/cursor.svg);
-}
-
-pre code ins::before {
-    content: url(icons/plus.svg);
-}
-
-pre code del::before {
-    content: url(icons/minus.svg);
-}
-*/
-
 div.code-container, div.sidenote-container {
     position: relative;
 }
@@ -383,10 +326,11 @@ div.sidenote-group aside.explained {
     background-color: rgb(232, 255, 255);
 }
 
-
 /*
-    hints
+    groups and specifics: hints, questions, concepts
 */
+
+/* group buttons */
 
 .group-button {
     position: relative;
@@ -419,34 +363,6 @@ div.sidenote-group aside.explained {
     filter: opacity(100);
 }
 
-.hint, .question, .concepts {
-    position: relative;
-    padding: 1pt 12pt 1pt 12pt;
-}
-
-.hint, .hint-button {
-    background-color: rgb(232, 255, 232);
-}
-
-.hint {
-    /* necessary if we want the code segments in the hints/solutions to have
-       a shadow.
-       https://stackoverflow.com/questions/3032856/is-it-possible-to-set-the-stacking-order-of-pseudo-elements-below-their-parent-e */
-    z-index: 1;
-}
-
-.question, .question-button {
-    background-color: rgb(255, 255, 232);
-}
-
-.concepts, .concept-button {
-    background-color: rgb(232, 255, 255);
-}
-
-.concepts {
-    font-weight: 300;
-}
-
 /*
 .group-button[active]::after {
     width: 0;
@@ -459,41 +375,37 @@ div.sidenote-group aside.explained {
 }
 */
 
-summary {
-    font-family: 'Ubuntu Condensed', sans-serif;
-    color: rgb(0, 164, 128);
+/* general */
+
+.group-element { /* .hint, .question, .concepts */
+    position: relative;
+    padding: 1pt 12pt 1pt 12pt;
+    /* necessary if we want a shadow below the code segments in a group element
+       https://stackoverflow.com/questions/3032856/is-it-possible-to-set-the-stacking-order-of-pseudo-elements-below-their-parent-e */
+    z-index: 1;
 }
 
-details {
-    padding: 12px;
+/* coloring scheme */
+
+.hint, .hint-button {
+    background-color: rgb(232, 255, 232);
 }
 
-details[open] {
-
+.question, .question-button {
+    background-color: rgb(255, 255, 232);
 }
 
-/*
-    questions
-*/
-
-/*
-div.feedback-group {
-    position: absolute;
-    margin-left: 16px;
-    width: 240px;
-    left: 100%;
+.concepts, .concept-button {
+    background-color: rgb(232, 255, 255);
 }
 
-div.feedback-group aside {
-    padding: 6px 16px 6px 16px;
-    color: rgb(112, 112, 112);
+/* concept-specific */
+
+.concepts {
     font-weight: 300;
 }
-*/
 
-div.question fieldset label {
-    display: block;
-}
+/* question-specific */
 
 fieldset {
     border: none;
@@ -506,8 +418,11 @@ div.question input {
 }
 
 div.question label {
+    display: block;
     padding: 0.5em 1em 0.5em 1em;
-    position:relative;
+    position: relative;
+    /* code shadow fix */
+    z-index: 1;
 }
 
 div.question label.highlighted:not([correct]) {
@@ -537,6 +452,29 @@ div.question label aside:not([sidenote]) {
     font-weight: 300;
 }
 
+/* question-specific: feedback buttons */
+
+.feedback-button {
+    position: relative;
+    font-family: 'Ubuntu Condensed', sans-serif;
+    color: rgb(0, 164, 128);
+    border: 2px solid rgb(0, 164, 128);
+    border-radius: 20px;
+    background: none;
+    padding: 6px 18px 6px 18px;
+    margin: 12px 8px 12px 32px;
+}
+
+.feedback-button:hover:not([disabled]), .feedback-button[active] {
+    color: rgb(255, 255, 255);
+    background-color: rgb(0, 164, 128);
+}
+
+.feedback-button:disabled {
+    filter: grayscale(100%);
+    filter: opacity(25%);
+}
+
 /* use this as a starting point,
    if you want feedback buttons located on the side
 
@@ -561,23 +499,20 @@ div.question label aside:not([sidenote]) {
 }
 */
 
-.feedback-button {
-    position: relative;
-    font-family: 'Ubuntu Condensed', sans-serif;
-    color: rgb(0, 164, 128);
-    border: 2px solid rgb(0, 164, 128);
-    border-radius: 20px;
-    background: none;
-    padding: 6px 18px 6px 18px;
-    margin: 12px 8px 12px 32px;
-}
+/*
+    repl
+*/
 
-.feedback-button:hover:not([disabled]), .feedback-button[active] {
-    color: rgb(255, 255, 255);
-    background-color: rgb(0, 164, 128);
+/*
+#repl {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    width: 50%;
+    border: 2px dashed #ff0000;
+    min-width: 500px;
+    height: 80%;
+    min-height: 500px;
+    margin-left: 32px;
 }
-
-.feedback-button:disabled {
-    filter: grayscale(100%);
-    filter: opacity(25%);
-}
+*/
