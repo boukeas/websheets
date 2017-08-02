@@ -430,8 +430,9 @@ div.sidenote-group aside.explained {
 
 .hint {
     /* necessary if we want the code segments in the hints/solutions to have
-       a shadow but note there is interference with other elements
-    z-index: -2; */
+       a shadow.
+       https://stackoverflow.com/questions/3032856/is-it-possible-to-set-the-stacking-order-of-pseudo-elements-below-their-parent-e */
+    z-index: 1;
 }
 
 .question, .question-button {
