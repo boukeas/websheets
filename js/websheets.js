@@ -746,7 +746,7 @@ function multipleFeedbackHandler() {
  */
 function handleQuestions() {
     // retrieve all closed form questions
-    let questions = document.querySelectorAll("div.question");
+    let questions = document.querySelectorAll("div.question-single, div.question-multiple");
     let questionCounter = 1;
     for (let question of questions) {
         // create a feedback button for the question
