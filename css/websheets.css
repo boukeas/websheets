@@ -429,8 +429,9 @@ div.sidenote-group aside.explained {
 }
 
 .hint {
-    /* probably necessary for the shadow below the code segments */
-    z-index: -2;
+    /* necessary if we want the code segments in the hints/solutions to have
+       a shadow but note there is interference with other elements
+    z-index: -2; */
 }
 
 .question, .question-button {
