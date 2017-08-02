@@ -69,12 +69,16 @@ Node.prototype.ancestor = function(selector) {
 function groupSelected(first, selector, name) {
     // create a div to hold the elements of the group
     let container = document.createElement('div');
-    container.className = name;
+    container.classList.add(name);
+    // add to generic 'group' class
+    container.classList.add('group');
     // placement of the group div right before the first element
     first.parentNode.insertBefore(container, first);
     // find consecutive selected sibling elements and move them in the group div
     let current = first;
     while (current) {
+        // add to generic 'group-element' class
+        current.classList.add('group-element');
         // find next element before appending current one
         // otherwise the sibling 'connection' between them is lost
         let next = current.nextSelectedSibling(selector);
@@ -470,7 +474,9 @@ function handleGroup(preselector, selector, groupName, containerName=groupName) 
             let group = groupSelected(first, selector, groupName + '-group');
             // create a container to hold the group
             let container = document.createElement('div');
-            container.className = containerName + '-container';
+            container.classList.add(containerName + '-container');
+            // add to generic 'group-container' class
+            container.classList.add('group-container');
             group.parentNode.insertBefore(container, group);
             container.appendChild(group);
         }
@@ -529,16 +535,16 @@ let buttonMap = {
 
     'hint': function (buttons, counters) {
         for (let button of buttons.childNodes) {
-            if (button.element.className == 'hint') {
+            if (button.element.classList.contains('solution')) {
+                if (counters['solution'] < 2)
+                    button.innerHTML = 'Λύση';
+                else
+                    button.innerHTML = 'Λύση ' + button.counter;
+            } else {
                 if (counters['hint'] < 2)
                     button.innerHTML = 'Υπόδειξη';
                 else
                     button.innerHTML = 'Υπόδειξη ' + button.counter;
-            } else if (button.element.className == 'hint solution') {
-                if (counters['hint solution'] < 2)
-                    button.innerHTML = 'Λύση';
-                else
-                    button.innerHTML = 'Λύση ' + button.counter;
             }
         }
     }
@@ -574,7 +580,9 @@ function addGroupButtons(name) {
         hideAll(group.childNodes);
         // create div for the buttons
         let buttons = document.createElement('div');
-        buttons.className = name + '-group-buttons';
+        buttons.classList.add(name + '-group-buttons');
+        // add to generic 'group-buttons' class
+        buttons.classList.add('group-buttons');
         buttons.active = null;
         let buttonCounters = {};
         for (let element of group.childNodes) {
@@ -589,19 +597,23 @@ function addGroupButtons(name) {
                 element.classList.remove('active');
                 buttonActivate(button);
             }
-            // button content
-            if (buttonCounters[element.className]) {
-                buttonCounters[element.className]++;
+            // button content: numbering according to button class
+            // it is important that the class list of the group element contains
+            // the most important class **first**, i.e. hint or solution
+            let buttonType = element.classList[0];
+            if (buttonCounters[buttonType]) {
+                buttonCounters[buttonType]++;
             } else {
-                buttonCounters[element.className] = 1;
+                buttonCounters[buttonType] = 1;
             }
-            button.counter = buttonCounters[element.className];
+            button.counter = buttonCounters[buttonType];
             // click event
             button.onclick = groupButtonClickHandler;
         }
         // place the buttons before the group
         container.insertBefore(buttons, container.firstChild);
-        //
+        // use the appropriate function in the buttonMap to properly label and
+        // number the group buttons
         buttonMap[name](buttons, buttonCounters);
     }
 }
