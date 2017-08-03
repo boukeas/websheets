@@ -465,20 +465,21 @@ function handleNavigation(sections) {
                         defaults to the name of the group. If null, no container
                         is generated.
  */
-function handleGroup(preselector, selector, groupName, containerName=groupName) {
+function handleGroup(preselector, selector, groupName, buttons=false, containerName=groupName) {
     // use preselector to find the first element for each group of elements
     let firsts = document.querySelectorAll(preselector + ' + ' + selector);
     if (containerName) {
         for (let first of firsts) {
             // move all sibling elements into a group div
             let group = groupSelected(first, selector, groupName + '-group');
-            // create a container to hold the group
+            // create a container to hold the group and place it
             let container = document.createElement('div');
             container.classList.add(containerName + '-container');
-            // add to generic 'group-container' class
             container.classList.add('group-container');
             group.parentNode.insertBefore(container, group);
             container.appendChild(group);
+            // create buttons, if so requested
+            if (buttons) addGroupButtons(container, containerName);
         }
     } else {
         for (let first of firsts) {
@@ -557,7 +558,7 @@ let buttonMap = {
 }
 
 
-/**
+/** REWRITE TO MATCH: NOW HANDLES A SINGLE CONTAINER AT A TIME
  * Locates group containers (such as those created by the handleGroup function)
  * and creates a group of buttons within the container, corresponding to the
  * elements of the group.
@@ -577,52 +578,50 @@ let buttonMap = {
                         name + '-container').
  * @param buttonTxt     The text to appear on the numbered buttons.
  */
-function addGroupButtons(name) {
-    let containers = document.querySelectorAll('.' + name + '-container');
-    for (let container of containers) {
-        // retrieve the group inside the container
-        // the buttons will correspond to the children of this group
-        let group = container.firstChild;
-        hideAll(group.childNodes);
-        // create div for the buttons
-        let buttons = document.createElement('div');
-        buttons.classList.add(name + '-group-buttons');
-        // add to generic 'group-buttons' class
-        buttons.classList.add('group-buttons');
-        buttons.active = null;
-        let buttonCounters = {};
-        for (let element of group.childNodes) {
-            // create button
-            let button = document.createElement('button');
-            button.className = 'group-button ' + name + '-button';
-            buttons.appendChild(button);
-            // link to element
-            button.element = element;
-            element.button = button;
-            if (element.classList.contains('active')) {
-                element.classList.remove('active');
-                buttonActivate(button);
-            }
-            // button content: numbering according to button class
-            // it is important that the class list of the group element contains
-            // the most important class **first**, i.e. hint or solution
-            let buttonType = element.classList[0];
-            if (buttonCounters[buttonType]) {
-                buttonCounters[buttonType]++;
-            } else {
-                buttonCounters[buttonType] = 1;
-            }
-            button.counter = buttonCounters[buttonType];
-            // click event
-            button.onclick = groupButtonClickHandler;
+function addGroupButtons(container, name) {
+    // retrieve the group inside the container
+    // the buttons will correspond to the children of this group
+    let group = container.firstChild;
+    hideAll(group.childNodes);
+    // create div for the buttons
+    let buttons = document.createElement('div');
+    buttons.classList.add(name + '-group-buttons');
+    // add to generic 'group-buttons' class
+    buttons.classList.add('group-buttons');
+    buttons.active = null;
+    let buttonCounters = {};
+    for (let element of group.childNodes) {
+        // create button
+        let button = document.createElement('button');
+        button.className = 'group-button ' + name + '-button';
+        buttons.appendChild(button);
+        // link to element
+        button.element = element;
+        element.button = button;
+        if (element.classList.contains('active')) {
+            element.classList.remove('active');
+            buttonActivate(button);
         }
-        // place the buttons before the group
-        container.insertBefore(buttons, container.firstChild);
-        // use the appropriate function in the buttonMap to properly label and
-        // number the group buttons
-        buttonMap[name](buttons, buttonCounters);
+        // button content: numbering according to button class
+        // it is important that the class list of the group element contains
+        // the most important class **first**, i.e. hint or solution
+        let buttonType = element.classList[0];
+        if (buttonCounters[buttonType]) {
+            buttonCounters[buttonType]++;
+        } else {
+            buttonCounters[buttonType] = 1;
+        }
+        button.counter = buttonCounters[buttonType];
+        // click event
+        button.onclick = groupButtonClickHandler;
     }
+    // place the buttons before the group
+    container.insertBefore(buttons, container.firstChild);
+    // use the appropriate function in the buttonMap to properly label and
+    // number the group buttons
+    buttonMap[name](buttons, buttonCounters);
 }
+
 
 //// event handlers for explanations
 
@@ -919,13 +918,11 @@ document.body.onload = function() {
     // add navigation buttons
     handleNavigation(sections);
     // group generic elements and add buttons for revealing them
-    handleGroup(':not(.generic)', '.generic', 'generic');
-    addGroupButtons('generic');
+    handleGroup(':not(.generic)', '.generic', 'generic', true);
     // group hints and add buttons for revealing them
-    handleGroup(':not(.hint)', '.hint', 'hint');
-    addGroupButtons('hint');
+    handleGroup(':not(.hint)', '.hint', 'hint', true);
     // group code explanations
-    handleGroup('pre.prettyprint', 'aside', 'sidenote', 'code');
+    handleGroup('pre.prettyprint', 'aside', 'sidenote', false, 'code');
     handleExplanations();
     // group sidenotes
     handleGroup('p', 'aside', 'sidenote');
@@ -933,8 +930,7 @@ document.body.onload = function() {
     // determine where to place sidenotes (to the margin or inline)
     if (params.marginnotes) document.body.classList.add('marginnotes');
     // group questions, add buttons for revealing them and install checking mechanism
-    handleGroup(':not(.question)', '.question', 'question');
-    addGroupButtons('question');
+    handleGroup(':not(.question)', '.question', 'question', true);
     handleQuestions();
     // add del, ins and mark classes to the code li's, so they are properly
     // formatted (highlighted as complete lines) by the css
