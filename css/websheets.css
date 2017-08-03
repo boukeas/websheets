@@ -420,10 +420,14 @@ fieldset {
     border: none;
     margin: 0;
     padding: 0;
+    /* this left padding is to accomodate the input button */
+    padding-left: 30px;
 }
 
 div.question input {
-    margin-right: 12px;
+    margin-top: 0;
+    position: absolute;
+    left: -30px;
 }
 
 div.question label {
@@ -455,8 +459,7 @@ div.question label aside[sidenote] {
 }
 
 div.question label aside:not([sidenote]) {
-    margin-left: 16px;
-    padding: 6px 16px 6px 16px;
+    padding: 8px 0px;
     color: rgb(112, 112, 112);
     font-weight: 300;
 }
