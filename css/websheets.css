@@ -73,7 +73,7 @@ footer a {
 }
 
 footer h3 + p {
-    margin-top: -12pt;
+    margin-top: -12px;
 }
 
 .footer-container {
@@ -336,13 +336,28 @@ div.sidenote-group aside.explained {
     position: relative;
     font-family: 'Ubuntu Condensed', sans-serif;
     border: none;
-    border-bottom: 4px solid transparent;
+    /* border-bottom: 4px solid transparent;*/
     padding: 6px 18px 6px 18px;
-    margin: 12px 8px 12px 0px;
+    margin: 12px 0 0 0;
     box-sizing: content-box;
     border-radius: 5px;
     filter: grayscale(50%);
     filter: opacity(50%);
+}
+
+.group-button.active {
+    margin-bottom: 0;
+    border-bottom: 4px solid orange;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    filter: grayscale(0%);
+    filter: opacity(100);
+}
+
+.group-button:not(.active) {
+    /* replaces the 4px orange bottom border of an active button with a margin */
+    border-bottom: none;
+    margin-bottom: 4px;
 }
 
 .group-button.active:hover {
@@ -351,14 +366,6 @@ div.sidenote-group aside.explained {
 }
 
 .group-button:not(.active):hover {
-    filter: grayscale(0%);
-    filter: opacity(100);
-}
-
-.group-button.active {
-    border-bottom: 4px solid orange;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
     filter: grayscale(0%);
     filter: opacity(100);
 }
@@ -379,10 +386,18 @@ div.sidenote-group aside.explained {
 
 .group-element { /* .hint, .question, .concepts */
     position: relative;
-    padding: 1pt 12pt 1pt 12pt;
+    padding: 12px 16px 12px 16px;
+    /* this is the distance between the element and the group buttons */
+    margin-top: 0px;
     /* necessary if we want a shadow below the code segments in a group element
        https://stackoverflow.com/questions/3032856/is-it-possible-to-set-the-stacking-order-of-pseudo-elements-below-their-parent-e */
     z-index: 1;
+}
+
+.group-element p {
+        padding: 0;
+        margin-top: 0;
+        margin-bottom: 6px;
 }
 
 /* coloring scheme */
@@ -462,7 +477,7 @@ div.question label aside:not([sidenote]) {
     border-radius: 20px;
     background: none;
     padding: 6px 18px 6px 18px;
-    margin: 12px 8px 12px 32px;
+    margin: 12px 8px 0px 32px;
 }
 
 .feedback-button:hover:not([disabled]), .feedback-button[active] {
