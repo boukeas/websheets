@@ -41,9 +41,9 @@ pre.prettyprint, code {
 
 pre.prettyprint {
 	position: relative;
-	margin: .5em 0;
 	box-sizing: border-box;
-	margin-bottom: 1em;
+    padding: 6px 0;                   /* this is the padding around the code */
+    margin: .5em 0 .75em 0;
     border-left: 10px solid rgb(0, 128, 128);
 	background-color: #f3f3f4;
     overflow: visible;
