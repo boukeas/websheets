@@ -540,6 +540,11 @@ let buttonMap = {
                     button.innerHTML = 'Λύση';
                 else
                     button.innerHTML = 'Λύση ' + button.counter;
+            } else if (button.element.classList.contains('answer')) {
+                if (counters['answer'] < 2)
+                    button.innerHTML = 'Απάντηση';
+                else
+                    button.innerHTML = 'Απάντηση ' + button.counter;
             } else {
                 if (counters['hint'] < 2)
                     button.innerHTML = 'Υπόδειξη';
@@ -918,9 +923,6 @@ document.body.onload = function() {
     // group hints and add buttons for revealing them
     handleGroup(':not(.hint)', '.hint', 'hint');
     addGroupButtons('hint');
-    // special handling of solution-hints
-    let solutions = document.querySelectorAll('.solution');
-    // for (let solution of solutions) solution.button.innerHTML = 'Λύση';
     // group code explanations
     handleGroup('pre.prettyprint', 'aside', 'sidenote', 'code');
     handleExplanations();
