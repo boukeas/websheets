@@ -446,7 +446,7 @@ div.question label.highlighted[correct] {
     background-color: rgb(192, 255, 192);
 }
 
-div.question label aside[sidenote] {
+div.question label div.feedback[sidenote] {
     position: absolute;
     left: 100%;
     top: 0px;
@@ -458,7 +458,7 @@ div.question label aside[sidenote] {
     font-weight: 300;
 }
 
-div.question label aside:not([sidenote]) {
+div.question label div.feedback:not([sidenote]) {
     padding: 8px 0px;
     color: rgb(112, 112, 112);
     font-weight: 300;
