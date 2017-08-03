@@ -519,9 +519,10 @@ function groupButtonClickHandler() {
 ///////////////////
 
 let buttonMap = {
-    'concept': function(buttons, counters) {
-        // there should be only one concept button in the group
-        buttons.firstChild.innerHTML = 'Έννοιες';
+    'generic': function(buttons, counters) {
+        for (let button of buttons.childNodes) {
+            button.innerHTML = button.element.getAttribute('text');
+        }
     },
 
     'question': function (buttons, counters) {
@@ -917,9 +918,9 @@ document.body.onload = function() {
     handleVisible(steps, sections, params);
     // add navigation buttons
     handleNavigation(sections);
-    // group concept explanations and add buttons for revealing them
-    handleGroup(':not(.concepts)', '.concepts', 'concept');
-    addGroupButtons('concept');
+    // group generic elements and add buttons for revealing them
+    handleGroup(':not(.generic)', '.generic', 'generic');
+    addGroupButtons('generic');
     // group hints and add buttons for revealing them
     handleGroup(':not(.hint)', '.hint', 'hint');
     addGroupButtons('hint');

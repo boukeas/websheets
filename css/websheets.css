@@ -338,7 +338,7 @@ div.sidenote-group aside.explained {
     border: none;
     /* border-bottom: 4px solid transparent;*/
     padding: 6px 18px 6px 18px;
-    margin: 12px 0 0 0;
+    margin: 12px 8px 0 0;
     box-sizing: content-box;
     border-radius: 5px;
     filter: grayscale(50%);
@@ -410,14 +410,8 @@ div.sidenote-group aside.explained {
     background-color: rgb(255, 255, 232);
 }
 
-.concepts, .concept-button {
+.generic, .generic-button {
     background-color: rgb(232, 255, 255);
-}
-
-/* concept-specific */
-
-.concepts {
-    font-weight: 300;
 }
 
 /* question-specific */
