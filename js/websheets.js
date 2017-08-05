@@ -467,7 +467,11 @@ function handleNavigation(sections) {
  */
 function handleGroup(preselector, selector, groupName, buttons=false, containerName=groupName) {
     // use preselector to find the first element for each group of elements
-    let firsts = document.querySelectorAll(preselector + ' + ' + selector);
+    let firsts
+    if (preselector)
+        firsts = document.querySelectorAll(preselector + ' + ' + selector);
+    else
+        firsts = document.querySelectorAll(selector);
     if (containerName) {
         for (let first of firsts) {
             // move all sibling elements into a group div
@@ -922,10 +926,10 @@ document.body.onload = function() {
     // group hints and add buttons for revealing them
     handleGroup(':not(.hint)', '.hint', 'hint', true);
     // group code explanations
-    handleGroup('pre.prettyprint', 'aside', 'sidenote', false, 'code');
+    handleGroup('pre.prettyprint', 'div.explanation', 'sidenote', false, 'code');
     handleExplanations();
     // group sidenotes
-    handleGroup('p', 'aside', 'sidenote');
+    handleGroup('', 'aside', 'sidenote');
     handleSidenotes();
     // determine where to place sidenotes (to the margin or inline)
     if (params.marginnotes) document.body.classList.add('marginnotes');
@@ -934,8 +938,9 @@ document.body.onload = function() {
     handleQuestions();
     // add del, ins and mark classes to the code li's, so they are properly
     // formatted (highlighted as complete lines) by the css
-    for (let del of document.querySelectorAll('pre del'))
+    for (let del of document.querySelectorAll('pre del')) {
         del.ancestor('pre li').classList.add('del');
+    }
     for (let ins of document.querySelectorAll('pre ins')) {
         let ancestor = ins.ancestor('pre li');
         ancestor.classList.add('ins');

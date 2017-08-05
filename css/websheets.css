@@ -314,15 +314,23 @@ body.marginnotes div.sidenote-group {
     margin-left: 16px;
     width: 240px;
 }
+
+div.sidenote-group img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
 /**/
 
-div.sidenote-group aside {
+div.sidenote-group div.explanation, div.sidenote-group aside {
     padding: 6px 16px 6px 16px;
     color: rgb(112, 112, 112);
     font-weight: 300;
 }
 
-div.sidenote-group aside.explained {
+div.sidenote-group div.explanation.explained {
     background-color: rgb(232, 255, 255);
 }
 
@@ -386,7 +394,9 @@ div.sidenote-group aside.explained {
 
 .group-element { /* .hint, .question, .concepts */
     position: relative;
-    padding: 12px 16px 12px 16px;
+    /* padding-left and -right set to 0 to have sidenotes correctly placed */
+    padding: 12px 0 12px 16px;
+    box-sizing: content-box;
     /* this is the distance between the element and the group buttons */
     margin-top: 0px;
     /* necessary if we want a shadow below the code segments in a group element
@@ -396,6 +406,7 @@ div.sidenote-group aside.explained {
 
 .group-element p {
         padding: 0;
+        padding-right: 16px;
         margin-top: 0;
         margin-bottom: 6px;
 }
