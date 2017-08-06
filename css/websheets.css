@@ -324,13 +324,13 @@ div.sidenote-group img {
 }
 /**/
 
-div.sidenote-group div.explanation, div.sidenote-group aside {
+div.sidenote-group .explanation, div.sidenote-group aside {
     padding: 6px 16px 6px 16px;
     color: rgb(112, 112, 112);
     font-weight: 300;
 }
 
-div.sidenote-group div.explanation.explained {
+div.sidenote-group .explanation.explained {
     background-color: rgb(232, 255, 255);
 }
 

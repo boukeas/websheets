@@ -933,7 +933,7 @@ function post() {
     // group hints and add buttons for revealing them
     handleGroup(':not(.hint)', '.hint', 'hint', true);
     // group code explanations
-    handleGroup('pre.prettyprint', 'div.explanation', 'sidenote', false, 'code');
+    handleGroup('pre.prettyprint', '.explanation', 'sidenote', false, 'code');
     handleExplanations();
     // group sidenotes
     handleGroup('', 'aside', 'sidenote');
