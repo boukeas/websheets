@@ -7,6 +7,8 @@
     <link rel="stylesheet" type="text/css" href="css/prettify.css">
     <link rel="stylesheet" type="text/css" href="css/websheets.css">
     <script src="js/whitespace.js"></script>
+    <script src="js/websheets.js"></script>
+    <script src="js/prettify.js"></script>
 </head>
 <body>
 
@@ -1015,8 +1017,13 @@
     </p>
 </footer>
 
-<script src="js/websheets.js"></script>
-<script src="js/run_prettify.js"></script>
+<script>
+    document.body.onload = function() {
+        pre();
+        PR.prettyPrint();
+        post();
+    }
+</script>
 
 </body>
 </html>

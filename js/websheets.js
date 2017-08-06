@@ -851,59 +851,66 @@ function handleFooter() {
  *
  * Run this part **before** run_prettify.js
  */
+function pre() {
 
-document.body.hide();
+    document.body.hide();
 
-let blocks = document.querySelectorAll('pre.prettyprint');
-for (let block of blocks) {
-    // force linenums (for correct rendering)
-    if (!block.classList.contains('linenums')) {
-        block.classList.add('linenums');
-        block.setAttribute('mock-linenums', '');
-    }
-    // remove whitespace between <pre> and <code> tags -> allows indenting
-    if (block.firstChild.nodeType == 3 && is_all_ws(block.firstChild))
-        block.removeChild(block.firstChild);
-    if (block.lastChild.nodeType == 3 && is_all_ws(block.lastChild))
-        block.removeChild(block.lastChild);
-    // handle whitespace within code tags
-    let segment = block.querySelector('code');
-    // remove trailing whitespace between actual code and the </code> tag
-    if (segment.lastChild.nodeType == 3)
-        segment.lastChild.textContent = segment.lastChild.textContent.trimRight();
-    if (segment.firstChild.nodeType == 3) {
-        // remove leading whitespace, up to the first linebreak
-        let linebreak = segment.firstChild.textContent.indexOf('\n');
-        if (!linebreak || is_all_ws(segment.firstChild.textContent.substring(0, linebreak)))
-            segment.firstChild.textContent = segment.firstChild.textContent.substring(linebreak+1);
-        // replace no-indent shorthand for indent=0
-        if (segment.hasAttribute('no-indent')) {
-            segment.removeAttribute('no-indent');
-            segment.setAttribute('indent', 0);
+    let blocks = document.querySelectorAll('pre.prettyprint');
+    for (let block of blocks) {
+        // force linenums (for correct rendering)
+        if (!block.classList.contains('linenums')) {
+            block.classList.add('linenums');
+            block.setAttribute('mock-linenums', '');
         }
-        // check if current indent needs to be preserved or replaced with user preference
-        if (segment.hasAttribute('indent')) {
-            let indent = segment.getAttribute('indent');
-            // compute indent of first line, as a reference
-            // https://stackoverflow.com/questions/25823914/javascript-count-spaces-before-first-character-of-a-string
-            let firstLineIndent = segment.firstChild.textContent.search(/[\S\uFEFF\xA0]/);
-            if (firstLineIndent < 0) firstLineIndent = segment.firstChild.textContent.length;
-            // replace leading indent with indent specified by user
-            const replaced = ' '.repeat(firstLineIndent);
-            const replacement = ' '.repeat(indent);
-            let headingFilter = RegExp('^' + replaced, 'gm');
-            for (let node of segment.childNodes) {
-                if (node.nodeType == 3)
-                    node.textContent = node.textContent.replace(headingFilter, replacement);
+        // remove whitespace between <pre> and <code> tags -> allows indenting
+        if (block.firstChild.nodeType == 3 && is_all_ws(block.firstChild))
+            block.removeChild(block.firstChild);
+        if (block.lastChild.nodeType == 3 && is_all_ws(block.lastChild))
+            block.removeChild(block.lastChild);
+        // handle whitespace within code tags
+        let segment = block.querySelector('code');
+        // remove trailing whitespace between actual code and the </code> tag
+        if (segment.lastChild.nodeType == 3)
+            segment.lastChild.textContent = segment.lastChild.textContent.trimRight();
+        if (segment.firstChild.nodeType == 3) {
+            // remove leading whitespace, up to the first linebreak
+            let linebreak = segment.firstChild.textContent.indexOf('\n');
+            if (!linebreak || is_all_ws(segment.firstChild.textContent.substring(0, linebreak)))
+                segment.firstChild.textContent = segment.firstChild.textContent.substring(linebreak+1);
+            // replace no-indent shorthand for indent=0
+            if (segment.hasAttribute('no-indent')) {
+                segment.removeAttribute('no-indent');
+                segment.setAttribute('indent', 0);
+            }
+            // check if current indent needs to be preserved or replaced with user preference
+            if (segment.hasAttribute('indent')) {
+                let indent = segment.getAttribute('indent');
+                // compute indent of first line, as a reference
+                // https://stackoverflow.com/questions/25823914/javascript-count-spaces-before-first-character-of-a-string
+                let firstLineIndent = segment.firstChild.textContent.search(/[\S\uFEFF\xA0]/);
+                if (firstLineIndent < 0) firstLineIndent = segment.firstChild.textContent.length;
+                // replace leading indent with indent specified by user
+                const replaced = ' '.repeat(firstLineIndent);
+                const replacement = ' '.repeat(indent);
+                let headingFilter = RegExp('^' + replaced, 'gm');
+                for (let node of segment.childNodes) {
+                    if (node.nodeType == 3)
+                        node.textContent = node.textContent.replace(headingFilter, replacement);
+                }
             }
         }
     }
 }
 
 
-//// onload
+/**
+ * Post-processing of code blocks:
+ *      -
+ *
+ * Run this part **after** run_prettify.js
+ */
 
-document.body.onload = function() {
+function post() {
     // retrieve all steps
     let steps = document.querySelectorAll('div.step');
     // enumerate steps
