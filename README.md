@@ -4,15 +4,18 @@ The websheets repository provides an HTML / Javascript / CSS infrastructure for 
 
 The websheets infrastructure is being developed within the [Pythonies project](http://pythonies.mysch.gr/), as a means of converting the python-related educational resources (now available as .pdf's built from [XeLaTeX sources](https://github.com/boukeas/pythonies)) into a more _interactive, online form_.
 
+The following websheets are currently available:
+- [Η Απάντηση](https://boukeas.github.io/websheets/answer.html) (in Greek), serves as a development testbed.
+
 ## How to build a websheet
 
 To start off, you can use a [template]() example, which showcases all the features you can incorporate in your websheets. The rest of the sections also describe these features, as well as how to use them.
 
 Note that styling relies _exclusively_ on the CSS.
 
-### Including scripts and styling
+### Include scripts and styling
 
-Here's what you'll need to include in your websheet's `<head>`:
+Here's what you'll need to include in your websheet's `head`:
 
     <link rel="stylesheet" type="text/css" href="css/fonts.css">
     <link rel="stylesheet" type="text/css" href="css/prettify.css">
@@ -21,28 +24,27 @@ Here's what you'll need to include in your websheet's `<head>`:
     <script src="js/websheets.js"></script>
     <script src="js/prettify.js"></script>
 
+You must also add an `onload` event handler to your document's `body`:
+
+        <body onload="process()">
+
+This initiates all javascript processing, right after the websheet has finished loading.
+
+#### Attribution
+
 The `prettify.js` and `prettify.css` files come from [google's code-prettify repository](https://github.com/google/code-prettify) and handle the way the code segments are rendered.
 
 The `whitespace.js` file contains code from [Mozilla's Developer Network](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Whitespace_in_the_DOM).
 
 Naturally, you can modify `websheets.css` to suit your own needs and also use your own `fonts.css`.
 
-You must also place this code, right before the end of your `</body>`:
-
-    <script>
-        document.body.onload = function() {
-            pre();
-            PR.prettyPrint();
-            post();
-        }
-    </script>
-
 ### Sectioning
 
-There should be a single `<h1>` element in the document. This will be used as a title for the websheet.
+There should be a single `h1` element in the document. This will be used as a title for the websheet.
 
-A websheet is divided into _sections_ and each section contains a number of _steps_ the learner should follow. Include sections in `<section>` elements, with the first
-child being an `<h2>` heading to denote the section's title. Use `<div class='step'>` for each step.
+A websheet is basically divided into _sections_ and each section contains a number of _steps_ the learner should follow. Include sections in `section` elements, with the first child being an `h2` heading to denote the section's title. Use a `div` belonging to the `step` class for each step.
+
+Make sure to mark _every_ paragraph with a `p` tag.
 
     <h1>Websheet title</h1>
 
@@ -66,11 +68,11 @@ child being an `<h2>` heading to denote the section's title. Use `<div class='st
         </div>
     </section>
 
-Make sure to mark _every_ paragraph with a `<p>` tag.
+Note that a `header` element is automatically created for the websheet, using mainly the document's `h1` element. On the other hand, a `footer` element is _not_ automatically created -- it needs to be explicitly included in the websheet's HTML code.
 
 ### Code Segments
 
-Including formatted code blocks requires a (standard) combination of `<pre>` and `<code>` tags.
+Including formatted code blocks requires a (standard) combination of `pre` and `code` tags.
 
     <pre class='prettyprint'>
         <code class='language-python' no-indent>
@@ -78,15 +80,15 @@ Including formatted code blocks requires a (standard) combination of `<pre>` and
         </code>
     </pre>
 
-If you don't use the `no-indent` attribute, whitespace will be _exactly_ as it appears in the `<pre>`-formatted code, which might not be what you want (especially in Python).
+If you don't use the `no-indent` attribute, whitespace will be _exactly_ as it appears in the `pre`-formatted code, which might not be what you want (especially in Python).
 
 The `no-indent` attribute is picked up by the javascript code and stripes the formatted code of any leading whitespace. If you require some amount of indentation in the formatted code, e.g. four spaces, use `indent=4`. The `no-indent` attribute is equivalent to specifying `indent=0`.
 
 #### Explained code
 
-If you need to explain a specific part of the code,  include it in `<a>` tags and place the explanation directly after the code, in a `<div class=explanation>`.
+If you need to explain a specific part of the code,  include it in `a` tags and place the explanation directly after the code, in a block-level element (e.g. `div` or `p`) belonging to the `explanation` class.
 
-You don't need to specify which explanation refers to which part of the code: explanations correspond to `<a>` tags in order of appearance. If you need to have a general explanation that doesn't correspond to marked code, use the `orphan` attribute.
+You don't need to specify which explanation refers to which part of the code: explanations correspond to `a` tags in order of appearance. If you need to have a general explanation that doesn't correspond to marked code, use the `orphan` attribute.
 
     <pre class='prettyprint'>
         <code class='language-python' no-indent>
@@ -100,15 +102,15 @@ You don't need to specify which explanation refers to which part of the code: ex
 
 #### Inserted, deleted or highlighted code
 
-You can use the standard `<ins>`, `<del>` and `<mark>` tags inside code, in order to style code segments that are inserted, deleted or need to be highlighted.
+You can use the standard `ins`, `del` and `mark` tags inside `code`, in order to style code segments that are inserted, deleted or need to be highlighted.
 
-By default, if a line of code contains such a tag, the styling applies to the whole line. If you need it applied only to the part of the code that is tagged, use the `inline` class.
+By default, if a line of code contains such a tag, the styling applies _to the whole line_. If you need it applied only to the part of the code that is tagged, use the `inline` class.
 
 ### Sidenotes
 
-You can use the standard `<aside>` tag to include comments and sidenotes.
+You can use the standard `aside` tag to include comments and sidenotes.
 
-You can place related `<aside>`s, next to one another (in succession) and they will be _grouped together_ automatically. Make sure you place the first of each group of `<aside>`s right _after_ the paragraph they pertain to.
+You can place related `aside`s, next to one another (in succession) and they will be _grouped together_ automatically. Make sure you place the first of each group of `aside`s right _after_ the paragraph they pertain to.
 
     <p> A paragraph of text.</p>
     <aside>
@@ -120,7 +122,7 @@ You can place related `<aside>`s, next to one another (in succession) and they w
 
 ### Hints and Solutions
 
-If, at some point in your websheet, you need to offer hints to the learner on how to accomplish a particular task, place each hint in a `<div class='hint'>`.
+If, at some point in your websheet, you need to offer hints to the learner on how to accomplish a particular task, place each hint in a block-level element (e.g. `div` or `p`) belonging to the `hint` class.
 
 Hints that are placed next to each other (in succession) are automatically _grouped together_ and numbered accordingly.
 
@@ -129,21 +131,22 @@ Except from `hint`, you can also use the classes `solution` and `answer` for add
 You can also use the `active` class, if you want a hint to be initially expanded by default.
 
     <p> Task description for the learner.</p>
-    <div class='hint active'>
-        <p> Points to general direction of solution.</p>
-    </div>
-    <div class='hint'>
+    <p class='hint active'>
+        Points to general direction of solution.
+    </p>
+    <p class='hint'>
         <p> A more concrete hint.</p>
-    </div>
+    </p>
     <div class='solution hint'>
         <p> Describes how to accomplish the task.</p>
+        <p> Provides detailed explanations.</p>
     </div>
 
 Apart from grouping hints together, the javascript code will create _buttons_, with appropriate numbered labels, for expanding and collapsing the hints.
 
 ### Questions
 
-There are currently three kinds of questions that can be used in websheeets:
+There are currently three kinds of questions that can be used in websheets:
 1. closed-form questions with a single correct answer
 1. closed-form questions where multiple answers can be selected
 1. general, open questions
@@ -206,7 +209,9 @@ You can provide per-answer feedback within each `label`, using a block-level ele
 
 #### Open questions
 
-The `div` containing the question should simply belong to the `question` class. No feedback mechanism is installed, but you can provide hints or answers to the question using the hint mechanism described above.
+The `div` containing the question should simply belong to the `question` class.
+No feedback mechanism is installed, but you can provide hints or answers to the
+question using the hint mechanism described above.
 
     <div class='question'>
         <p> Open question goes here.</p>
@@ -219,5 +224,15 @@ The `div` containing the question should simply belong to the `question` class. 
         </div>
     </div>
 
-
 ### Generic grouped elements
+
+The mechanism by which similar elements (such as hints, or questions) can be grouped and interactively expanded using automatically generated buttons is quite useful.
+
+Any block-level elements that belong to the `generic` class and are placed next to each other (in succession) are automatically _grouped together_. Each one of them is separately labeled using their `text` attribute.
+
+    <div class='generic active' text='variables'>
+        Anything you need to know about variables.
+    </div>
+    <div class='generic' text='expressions'>
+        Anything you need to know about expressions.
+    </div>
