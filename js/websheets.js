@@ -965,3 +965,9 @@ function post() {
     // ta-daaam!
     document.body.show();
 }
+
+function process() {
+    pre();
+    PR.prettyPrint();
+    post();
+}
