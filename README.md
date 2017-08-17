@@ -143,4 +143,81 @@ Apart from grouping hints together, the javascript code will create _buttons_, w
 
 ### Questions
 
+There are currently three kinds of questions that can be used in websheeets:
+1. closed-form questions with a single correct answer
+1. closed-form questions where multiple answers can be selected
+1. general, open questions
+
+Place each question in a `div` belonging (at least) to the `question` class. Questions that are placed next to each other (in succession) are automatically _grouped together_ and numbered accordingly.
+
+You can also use the `active` class, if you want a question to be initially expanded by default.
+
+Apart from grouping questions together, the javascript code will create _buttons_, with appropriate numbered labels, for expanding and collapsing the questions. It will also turn the questions into proper _forms_ and install a feedback mechanism where necessary.
+
+#### Closed-form questions with a single correct answer
+
+The `div` containing the question should belong to the `question-single` class (in addition to the `question` class).
+
+Following the actual question, you can specify the different answers within standard `label` tags. Specify the single correct answer with the `correct` attribute in the corresponding `label`.
+
+You can provide per-answer feedback within each `label`, using a block-level element belonging to the `feedback` class. Note that when the feedback button is pressed, only the feedback for the checked answer (whether correct or not) will be displayed.
+
+    <div class='question question-single'>
+        <p> Question goes here.</p>
+        <p> It can be as long or complex as you like.</p>
+        <label>
+            An option
+        </label>
+        <label correct>
+            The correct answer
+        </label>
+        <label>
+            A horrible answer
+            <p class='feedback'>
+                Feedback on the horrible answer.
+            </p>
+        </label>
+    </div>
+
+#### Closed-form questions with multiple selectable answers
+
+The `div` containing the question should belong to the `question-multiple` class (in addition to the `question` class).
+
+Following the actual question, you can specify the different answers within standard `label` tags. Specify the answers that should be checked with the `checkable` attribute in the corresponding `label`s.
+
+You can provide per-answer feedback within each `label`, using a block-level element belonging to the `feedback` class. Note that when the feedback button is pressed, feedback for _all_ answers (whether checkable or not) will be displayed.
+
+    <div class='question question-multiple'>
+        <p> Question goes here.</p>
+        <label checkable>
+            An option
+        </label>
+        <label checkable>
+            Another option
+        </label>
+        <label>
+            An option you shouldn't select
+            <div class='feedback'>
+                <p> Some feedback on the option.</p>
+                <p> And then some more.</p>
+            </div>
+        </label>
+    </div>
+
+#### Open questions
+
+The `div` containing the question should simply belong to the `question` class. No feedback mechanism is installed, but you can provide hints or answers to the question using the hint mechanism described above.
+
+    <div class='question'>
+        <p> Open question goes here.</p>
+        <p class='hint'>
+            A general remark.
+        </p>
+        <div class='answer hint'>
+            <p> An explanation.</p>
+            <p> With many details.</p>
+        </div>
+    </div>
+
+
 ### Generic grouped elements
