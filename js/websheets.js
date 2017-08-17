@@ -813,7 +813,7 @@ function handleQuestions() {
             // make sure the answer isn't checked
             answer.querySelector('input').checked = false;
             // link segment to feedback and button
-            answer.feedback = answer.querySelector('div.feedback');
+            answer.feedback = answer.querySelector('.feedback');
             if (answer.feedback) answer.feedback.hide();
             // following 2 lines: for feedback buttons on the side
             // answer.appendChild(feedbackButton.cloneNode(true));

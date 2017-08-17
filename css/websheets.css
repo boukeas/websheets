@@ -326,6 +326,7 @@ div.sidenote-group img {
 
 div.sidenote-group .explanation, div.sidenote-group aside {
     padding: 6px 16px 6px 16px;
+    margin: 0;
     color: rgb(112, 112, 112);
     font-weight: 300;
 }
@@ -457,7 +458,7 @@ div.question label.highlighted[correct] {
     background-color: rgb(192, 255, 192);
 }
 
-div.question label div.feedback[sidenote] {
+div.question label .feedback[sidenote] {
     position: absolute;
     left: 100%;
     top: 0px;
@@ -469,7 +470,7 @@ div.question label div.feedback[sidenote] {
     font-weight: 300;
 }
 
-div.question label div.feedback:not([sidenote]) {
+div.question label .feedback:not([sidenote]) {
     padding: 8px 0px;
     color: rgb(112, 112, 112);
     font-weight: 300;
