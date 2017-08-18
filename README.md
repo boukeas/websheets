@@ -9,7 +9,7 @@ The following websheets are currently available:
 
 ## How to build a websheet
 
-To start off, you can use a [template]() example, which showcases all the features you can incorporate in your websheets. The rest of the sections also describe these features, as well as how to use them.
+To start off, you can use a [template](https://boukeas.github.io/websheets/template.html) example, which showcases all the features you can incorporate in your websheets. The rest of the sections also describe these features, as well as how to use them.
 
 Note that styling relies _exclusively_ on the CSS.
 

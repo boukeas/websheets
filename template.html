@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/fonts.css">
+    <link rel="stylesheet" type="text/css" href="css/prettify.css">
+    <link rel="stylesheet" type="text/css" href="css/websheets.css">
+    <script src="js/whitespace.js"></script>
+    <script src="js/websheets.js"></script>
+    <script src="js/prettify.js"></script>
+</head>
+<body onload="process()">
+
+<h1>A Template for Worksheets</h1>
+
+<section>
+<h2>Introduction</h2>
+
+<p> You can have all the <em>text</em> you like, even inline <code>code</code>.</p>
+
+<p> Sometimes it's very handy to expose your text and use 'asides' for
+    remarks that shouldn't appear within the text.
+</p>
+<aside>
+    This is a remark.
+</aside>
+<aside>
+    Remarks appearing next to each other are grouped together.
+</aside>
+<aside>
+    Just remember to place asides <em>after</em> the paragraph they pertain to.
+</aside>
+
+<p> And you can expose concepts, or lessons to be learned interactively, like
+    below. This will not clutter your websheet and the learner may explore
+    the concepts at will.</p>
+
+<div class='generic' text='Generic'>
+    <p> I am within a block-level element belonging to the <code>generic</code>
+        class, so I can be expanded and collapsed using the button.
+    </p>
+    <p> My <code>text</code> property determines the label on the button.</p>
+</div>
+<div class='generic' text='Grouping'>
+    I belong to the same <code>generic</code> class so we are automatically
+    grouped together.
+
+    <div class='generic active' text='Nesting'>
+        <p> And you can even nest these things!</p>
+        <p> I am initially expanded, because I also belong to the <code>active</code>
+            class.
+        </p>
+    </div>
+</div>
+
+</section>
+
+<section>
+<h2>What you can do with code</h2>
+
+<div class='step'>
+    <p> You can have prettified code: </p>
+    <pre class='prettyprint'>
+        <code class='language-python' no-indent>
+            This is a line of code.
+            With another line following.
+        </code>
+    </pre>
+</div>
+
+<div class='step'>
+    <p> You can explain parts of the code. </p>
+    <pre class='prettyprint'>
+        <code class='language-python' no-indent>
+            This is a <a>line</a> of code.
+            With another <a>line</a> following.
+        </code>
+    </pre>
+    <div class='explanation'>
+        This explains the first line.
+    </div>
+    <div class='explanation' orphan>
+        This is a general remark, an 'orphan' explanation.
+    </div>
+    <div class='explanation'>
+        This explains the other line.
+    </div>
+</div>
+
+<div class='step'>
+    <p> And you can highlight code, or mark it as inserted or deleted.</p>
+    <pre class='prettyprint'>
+        <code class='language-python' no-indent>
+            <ins>This is a line of code.</ins>
+            With another <mark class='inline'>line</mark> following.
+            It can go on <del>(almost)</del> forever.
+        </code>
+    </pre>
+</div>
+</section>
+
+<section>
+<h2>Hints and questions</h2>
+
+<div class='step'>
+    <p> When you ask the learner to perform a task, you can give hints, or
+        even provide a solution.</p>
+    <div class='hint'>
+        This is a hint.
+    </div>
+    <div class='hint'>
+        <p> This is also a hint.</p>
+        <p> Hints can contain code (or whatever else you like).</p>
+        <pre class='prettyprint'>
+            <code class='language-python' no-indent>
+                This is a line of code.
+                With another line following.
+            </code>
+        </pre>
+    </div>
+    <div class='solution hint'>
+        And this is a complete solution.
+    </div>
+</div>
+
+<div class='step'>
+    <p> You can pose questions to the learner.</p>
+    <p> There can be different types of questions, and there can also be
+        feedback.</p>
+
+    <div class='question question-single'>
+        <p>There can be only a single correct answer to this question.</p>
+        <label> An incorrect option
+        </label>
+        <label> Another incorrect option
+            <p class='feedback'>
+                Feedback for this particular option.
+            </p>
+        </label>
+        <label correct> The correct answer
+            <p class='feedback'>
+                Feedback for the correct answer.
+            </p>
+        </label>
+    </div>
+    <div class='question question-multiple'>
+        <p>There can be multiple options that should be selected for this
+            question.</p>
+        <label> This option should not be selected.
+            <p class='feedback'>
+                Feedback for this particular option.
+            </p>
+        </label>
+        <label checkable> This option should be selected.
+        </label>
+        <label checkable> This option should also be selected.
+            <p class='feedback'>
+                Feedback for all questions appears when the answers are checked.
+            </p>
+        </label>
+    </div>
+    <div class='question'>
+        <p> Here's an open question.</p>
+        <div class='hint'>
+            You can provide hints.
+        </div>
+        <div class='answer hint'>
+            Or a complete answer.
+        </div>
+    </div>
+</div>
+
+<div class='step'>
+</div>
+
+</section>
+
+<footer>
+    <p> You need to provide the footer content explicitly.</p>
+</footer>
+
+</body>
+</html>
