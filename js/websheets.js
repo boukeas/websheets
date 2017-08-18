@@ -1,5 +1,26 @@
 'use strict';
 
+//////
+
+let languages = {
+    'en': {
+        'Answer': 'Answer',
+        'Step': 'Step',
+        'Section': 'Section',
+        'Check Answer': 'Check Answer',
+        'Question': 'Question',
+        'Solution': 'Solution',
+        'Hint': 'Hint'},
+    'el': {
+        'Answer': 'Απάντηση',
+        'Step': 'Βήμα',
+        'Check Answer': 'Έλεγχος Απάντησης',
+        'Section': 'Ενότητα',
+        'Question': 'Ερώτηση',
+        'Solution': 'Λύση',
+        'Hint': 'Υπόδειξη'}
+}, languageMap;
+
 ////// simple generic functions for hiding or revealing elements
 
 Node.prototype.hide = function() {
@@ -252,7 +273,7 @@ function handleSteps(steps) {
         headingDiv.onclick = toggleExpanded;
         // make an auto-numbered h3 heading for the step
         let heading = document.createElement('h3');
-        heading.innerHTML = 'Βήμα ' + step.getAttribute('counter');
+        heading.innerHTML = languageMap['Step'] + ' ' + step.getAttribute('counter');
         // make an expand/collapse button
         let button = document.createElement('button');
         button.className = 'expand-button';
@@ -314,7 +335,7 @@ function handleSectioning(sections) {
         section.heading = headingDiv;
         // create the subheading with the section's number and insert it
         let subheading = document.createElement(heading ? 'h4' : 'h2');
-        subheading.innerHTML = 'Ενότητα ' + section.getAttribute('counter');
+        subheading.innerHTML = languageMap['Section'] + ' ' + section.getAttribute('counter');
         headingDiv.appendChild(subheading);
         // now insert the section heading into the div, if it exists
         if (heading) {
@@ -534,7 +555,7 @@ let buttonMap = {
         let stepNumber = buttons.ancestor('div.step').getAttribute('counter');
         let questionNumber = 1;
         for (let button of buttons.childNodes) {
-            button.innerHTML = 'Ερώτηση ' + stepNumber + '.' + questionNumber;
+            button.innerHTML = languageMap['Question'] + ' ' + stepNumber + '.' + questionNumber;
             questionNumber++;
         }
     },
@@ -543,19 +564,19 @@ let buttonMap = {
         for (let button of buttons.childNodes) {
             if (button.element.classList.contains('solution')) {
                 if (counters['solution'] < 2)
-                    button.innerHTML = 'Λύση';
+                    button.innerHTML = languageMap['Solution'];
                 else
-                    button.innerHTML = 'Λύση ' + button.counter;
+                    button.innerHTML = languageMap['Solution'] + ' ' + button.counter;
             } else if (button.element.classList.contains('answer')) {
                 if (counters['answer'] < 2)
-                    button.innerHTML = 'Απάντηση';
+                    button.innerHTML = languageMap['Answer'];
                 else
-                    button.innerHTML = 'Απάντηση ' + button.counter;
+                    button.innerHTML = languageMap['Answer'] + button.counter;
             } else {
                 if (counters['hint'] < 2)
-                    button.innerHTML = 'Υπόδειξη';
+                    button.innerHTML = languageMap['Hint'];
                 else
-                    button.innerHTML = 'Υπόδειξη ' + button.counter;
+                    button.innerHTML = languageMap['Hint'] + ' ' + button.counter;
             }
         }
     }
@@ -773,7 +794,7 @@ function handleQuestions() {
         // create a feedback button for the question
         let feedbackButton = document.createElement('button');
         feedbackButton.className = 'feedback-button';
-        feedbackButton.innerHTML = 'Έλεγχος Απάντησης';
+        feedbackButton.innerHTML = languageMap['Check Answer'];
         // actions depending on the type of question (single or multiple choice)
         let inputType, changeHandler;
         if (question.classList.contains('question-single')) {
@@ -967,6 +988,14 @@ function post() {
 }
 
 function process() {
+    let language = document.documentElement.lang;
+    console.log(language);
+    if (language in languages)
+        languageMap = languages[language];
+    else
+        languageMap = languages['en'];
+    console.log(languageMap);
+
     pre();
     PR.prettyPrint();
     post();

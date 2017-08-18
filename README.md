@@ -13,7 +13,13 @@ To start off, you can use a [template](https://boukeas.github.io/websheets/templ
 
 Note that styling relies _exclusively_ on the CSS.
 
-### Include scripts and styling
+### Document setup
+
+Specify the websheet's language using the `lang` attribute of the `html` element. This will make sure the websheet uses the correct language constants.
+
+    <html lang='el'>
+
+Currently, there is support for english (`en`) and greek (`el`). Anything else defaults to english.
 
 Here's what you'll need to include in your websheet's `head`:
 
