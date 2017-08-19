@@ -2,6 +2,38 @@
 
 //////
 
+// make all content invisible, to avoid Flash of Unstyled Content
+document.documentElement.style.display = 'none';
+
+function loadjs(filename) {
+    let script = document.createElement('script');
+    script.setAttribute('type','text/javascript');
+    script.setAttribute('src', filename);
+    document.head.appendChild(script);
+}
+
+function loadcss(filename) {
+    let link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('type','text/css');
+    link.setAttribute('href',filename);
+    document.head.appendChild(link);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    loadcss('css/fonts.css');
+    loadcss('css/prettify.css');
+    loadcss('css/websheets.css');
+    loadjs('js/whitespace.js');
+    loadjs('js/prettify.js');
+});
+
+document.addEventListener('readystatechange', function() {
+    if (document.readyState == 'complete') process();
+});
+
+//////
+
 let languages = {
     'en': {
         'Answer': 'Answer',
@@ -864,6 +896,16 @@ function handleFooter() {
     container.appendChild(footer);
 }
 
+/*
+function wrap(element, classname=null) {
+    // http://codeblog.cz/vanilla/around.html#wrapinner
+    let wrapper = document.createElement('div');
+    if (classname) wrapper.className = classname;
+    while (element.firstChild) wrapper.append(element.firstChild);
+    element.append(wrapper);
+}
+*/
+
 /**
  * Pre-processing of code blocks:
  *      - forces linenums
@@ -872,10 +914,30 @@ function handleFooter() {
  *
  * Run this part **before** run_prettify.js
  */
-function pre() {
 
-    document.body.hide();
+/**
+ * Post-processing of code blocks:
+ *      -
+ *
+ * Run this part **after** run_prettify.js
+ */
 
+function process() {
+
+    /*
+    let progress = document.createElement('div');
+    progress.id = 'progress';
+    progress.innerHTML = '<p>loading websheet</p><div id="indicator"></div>';
+    document.body.insertBefore(progress, document.body.firstChild);
+    // progress.value = 0;
+    */
+
+    // select a language map, using the lang attribute of the <html> element
+    let language = document.documentElement.lang;
+    languageMap = language in languages ? languages[language] : languages['en'];
+
+
+    //
     let blocks = document.querySelectorAll('pre.prettyprint');
     for (let block of blocks) {
         // force linenums (for correct rendering)
@@ -921,17 +983,10 @@ function pre() {
             }
         }
     }
-}
 
+    //
+    PR.prettyPrint();
 
-/**
- * Post-processing of code blocks:
- *      -
- *
- * Run this part **after** run_prettify.js
- */
-
-function post() {
     // retrieve all steps
     let steps = document.querySelectorAll('div.step');
     // enumerate steps
@@ -984,19 +1039,6 @@ function post() {
     // place footer in container (for formatting purposes)
     handleFooter();
     // ta-daaam!
-    document.body.show();
-}
-
-function process() {
-    let language = document.documentElement.lang;
-    console.log(language);
-    if (language in languages)
-        languageMap = languages[language];
-    else
-        languageMap = languages['en'];
-    console.log(languageMap);
-
-    pre();
-    PR.prettyPrint();
-    post();
+    document.documentElement.style.display = 'block';
+    document.documentElement.classList.add('visible');
 }

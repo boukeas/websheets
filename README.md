@@ -21,28 +21,11 @@ Specify the websheet's language using the `lang` attribute of the `html` element
 
 Currently, there is support for english (`en`) and greek (`el`). Anything else defaults to english.
 
-Here's what you'll need to include in your websheet's `head`:
+Include the appropriate javascript code in your websheet's `head`:
 
-    <link rel="stylesheet" type="text/css" href="css/fonts.css">
-    <link rel="stylesheet" type="text/css" href="css/prettify.css">
-    <link rel="stylesheet" type="text/css" href="css/websheets.css">
-    <script src="js/whitespace.js"></script>
     <script src="js/websheets.js"></script>
-    <script src="js/prettify.js"></script>
 
-You must also add an `onload` event handler to your document's `body`:
-
-        <body onload="process()">
-
-This initiates all javascript processing, right after the websheet has finished loading.
-
-#### Attribution
-
-The `prettify.js` and `prettify.css` files come from [google's code-prettify repository](https://github.com/google/code-prettify) and handle the way the code segments are rendered.
-
-The `whitespace.js` file contains code from [Mozilla's Developer Network](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Whitespace_in_the_DOM).
-
-Naturally, you can modify `websheets.css` to suit your own needs and also use your own `fonts.css`.
+That's it.
 
 ### Sectioning
 
