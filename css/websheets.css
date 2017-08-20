@@ -169,6 +169,10 @@ div.section-heading h2 {
     step numbering
 */
 
+section {
+    position: relative;
+}
+
 section > div.step {
     position: relative;
 }
@@ -382,6 +386,32 @@ div.sidenote-group .explanation.explained {
 
 /*
     groups and specifics: hints, questions, concepts
+*/
+
+.group-container::before { /* , .sidenote-group::before { */
+    display: block;
+    position: absolute;
+    right: 100%;
+    margin: 12px 8px;
+}
+
+.question-container::before {
+    content: url('icons/compose.svg');
+}
+
+.hint-container::before {
+    content: url('icons/chat.svg');
+}
+
+.generic-container::before {
+    content: url('icons/focus.svg');
+}
+
+/*
+.sidenote-group::before {
+    content: url('icons/caution.svg');
+    margin-top: 0;
+}
 */
 
 /* group buttons */
