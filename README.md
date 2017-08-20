@@ -2,16 +2,15 @@
 
 The websheets repository provides an HTML / Javascript / CSS infrastructure for creating interactive worksheets for learning programming.
 
-The websheets infrastructure is being developed within the [Pythonies project](http://pythonies.mysch.gr/), as a means of converting the python-related educational resources (now available as .pdf's built from [XeLaTeX sources](https://github.com/boukeas/pythonies)) into a more _interactive, online form_.
+The websheets infrastructure is being developed within the [Pythonies project](http://pythonies.mysch.gr/), as a means of converting the python-related educational resources (currently available as .pdf's built from [XeLaTeX sources](https://github.com/boukeas/pythonies)) into a more _interactive, online form_.
 
-The following websheets are currently available:
-- [Η Απάντηση](https://boukeas.github.io/websheets/answer.html) (in Greek), serves as a development testbed.
+At the moment, a single websheet is available, serving as a development testbed: [Η Απάντηση](https://boukeas.github.io/websheets/answer.html) (in Greek).
 
-## How to build a websheet
+## How to build your own websheet
 
-To start off, you can use a [template](https://boukeas.github.io/websheets/template.html) example, which showcases all the features you can incorporate in your websheets. The rest of the sections also describe these features, as well as how to use them.
+To start off, you can clone this repository and use the [template](https://boukeas.github.io/websheets/template.html) example, which showcases all the features you can incorporate in your websheets. The rest of the sections describe these features, as well as how to use them.
 
-Note that styling relies _exclusively_ on the CSS.
+In a nutshell, you write standard HTML, sometimes following certain conventions or using special classes to provide additional semantics. We have tried to simplify things as much as possible for you. The Javascript code will heavily process your code and _restructure_ it appropriately, while all styling relies _exclusively_ on CSS.
 
 ### Document setup
 
