@@ -127,7 +127,7 @@ function process() {
     processVisible(steps, sections, params);
 
     // group asides
-    processGroup('', 'aside', 'sidenote');
+    processGroup(':not(aside)', 'aside', 'sidenote');
     processAsides();
     // determine where to place sidenotes (to the margin or inline)
     if (params.marginnotes) document.body.classList.add('marginnotes');
